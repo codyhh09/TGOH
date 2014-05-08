@@ -26,6 +26,7 @@ import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import edu.ycp.cs.cs496.TGOH.controller.AcceptUser4Course;
 import edu.ycp.cs.cs496.TGOH.controller.AddAnnouncement;
 import edu.ycp.cs.cs496.TGOH.controller.AddCourse;
 import edu.ycp.cs.cs496.TGOH.controller.DeleteCourse;
@@ -728,24 +729,13 @@ public class MainActivity extends Activity {
 						if(students.isChecked())
 						{
 							GetUser UConn = new GetUser();
-							Registration reg = new Registration(); 
+							AcceptUser4Course au = new AcceptUser4Course();
+							
 							try {
-								User user = UConn.getUser(students.getText().toString());	
-								reg.setUserId(user.getId());
-								reg.setCourseId(course.getId()); 
-								reg.setStatus(RegistrationStatus.APPROVED);
+								User user = UConn.getUser(students.getText().toString());
+								au.putUser(user.getUserName(), course.getCourse());
 							} catch (Exception e) {
 								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-							
-
-							
-							
-							RegisterForCourse con2  = new RegisterForCourse();
-							try {
-								con2.postRegisterRequest(reg);
-							} catch (Exception e) {
 								e.printStackTrace();
 							}
 						}
