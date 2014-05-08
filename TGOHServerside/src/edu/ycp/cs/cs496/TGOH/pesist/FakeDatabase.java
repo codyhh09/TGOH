@@ -138,7 +138,11 @@ public class FakeDatabase implements IDatabase {
 	}
 
 	public void deleteCourse(int Coursename){
-		courses.remove(Coursename-1);
+		for(Courses x : courses){
+			if(x.getId() == Coursename){
+				courses.remove(x);
+			}
+		}
 	}
 
 	public Registration registerUserForCourse(Registration reg) {
@@ -223,13 +227,12 @@ public class FakeDatabase implements IDatabase {
 	}
 	
 	public void removeNotification(int id){
-		notifications.remove(id);
-		notCounter--;
+		Notification not = getNotification(id);
+		notifications.remove(not);
 	}
 
 	@Override
 	public Courses getCourseByName(String coursename) {
-		// TODO Auto-generated method stub
 		for(Courses x : courses){
 			if(x.getCourse().equals(coursename)){
 				return x;

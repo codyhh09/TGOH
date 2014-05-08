@@ -105,7 +105,8 @@ private static final long serialVersionUID = 1L;
 			
 			
 			// writing the operation out.
-			JSON.getObjectMapper().writeValue(resp.getWriter(), controller2.GetANotification(Id).getText());
+			//JSON.getObjectMapper().writeValue(resp.getWriter(), controller2.GetANotification(Id).getText());
+			JSON.getObjectMapper().writeValue(resp.getWriter(), Id);
 		}
 	}
 }
