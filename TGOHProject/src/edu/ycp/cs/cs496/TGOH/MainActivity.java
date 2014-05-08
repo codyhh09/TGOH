@@ -1,14 +1,7 @@
 package edu.ycp.cs.cs496.TGOH;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.http.client.ClientProtocolException;
-
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -122,7 +115,6 @@ public class MainActivity extends Activity {
 		});
 	}
 	
-
 	/**DONE(FOR NOW)
 	 *Display the Sign up page 
 	 *User enters firstname/lastname/username/passowrd/usertype
@@ -655,7 +647,6 @@ public class MainActivity extends Activity {
 		}
 	}
 	
-
 	/**(needs to implement database
 	 * Displays the students who are pending for
 	 * a given course the teacher teaches
