@@ -31,7 +31,7 @@ public class RealDatabase implements IDatabase{
 
 	private static final int MAX_ATTEMPTS = 10;
 	
-	/*
+	/**
 	 * Done
 	 */
 	@Override
