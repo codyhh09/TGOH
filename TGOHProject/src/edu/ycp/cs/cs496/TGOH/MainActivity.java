@@ -94,10 +94,9 @@ public class MainActivity extends Activity {
         		
 				GetUser controller = new GetUser();
         			//get a user object from the database
-					try {
-						
+					try {	
 						Currentuser = controller.getUser(userName);
-						
+
 						if(Currentuser.getPassword().equals(passWord)){
 								username = userName;
 								if(username.equals("master")){
@@ -148,19 +147,24 @@ public class MainActivity extends Activity {
 			public void onClick(View v) {
 				if(Password.getText().toString().equals(Passwordcheck.getText().toString())){   //check to see if passwords entered are equal
 					adduser controller = new adduser();
+					GetUser con = new GetUser();
 					boolean type = isStudent.isChecked();
 					try {
-						if(controller.postUser(Username.getText().toString(), Password.getText().toString(),FirstName.getText().toString(), LastName.getText().toString(), type)){
-							// toast box: right
-							setDefaultView();
-							if(type == true){
-								Toast.makeText(MainActivity.this, "Welcome to TGOH. Please log in.", Toast.LENGTH_SHORT).show();
+						if(con.getUser(Username.getText().toString()).equals(null)){
+							if(controller.postUser(Username.getText().toString(), Password.getText().toString(),FirstName.getText().toString(), LastName.getText().toString(), type)){
+								// toast box: right
+								setDefaultView();
+								if(type == true){
+									Toast.makeText(MainActivity.this, "Welcome to TGOH. Please log in.", Toast.LENGTH_SHORT).show();
+								}else{
+									Toast.makeText(MainActivity.this, "You have requested to be a teacher. Your request is pending...", Toast.LENGTH_SHORT).show();
+								}
 							}else{
-								Toast.makeText(MainActivity.this, "You have requested to be a teacher. Your request is pending...", Toast.LENGTH_SHORT).show();
+								// toast box: error
+								Toast.makeText(MainActivity.this, "Error: try again", Toast.LENGTH_SHORT).show();
 							}
 						}else{
-							// toast box: error
-							Toast.makeText(MainActivity.this, "Error: try again", Toast.LENGTH_SHORT).show();
+							Toast.makeText(MainActivity.this, "Please select another username.", Toast.LENGTH_SHORT).show();
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -464,32 +468,31 @@ public class MainActivity extends Activity {
 					setDefaultView();
 				}
 			});
-		}
-		
-		ListView lview = (ListView) findViewById(R.id.listView1);
-		
-		//list of announcements
-		List<String> announcements = new ArrayList<String>();
 	
-		GetAnnouncements con = new GetAnnouncements();
-		
-		Notification[]  announce = null;
-		for(int i = 0; i <courses.length; i++){
-			try {
-				announce = con.getAnnouncements(courses[i].getId());
-			} catch (Exception e) {
-				e.printStackTrace();
-			} 
+			ListView lview = (ListView) findViewById(R.id.listView1);
 			
-			//adding the announcements to the list
-			for(int j = 0; j < announce.length; j++){
-				announcements.add(announce[j].getText());
+			//list of announcements
+			List<String> announcements = new ArrayList<String>();
+		
+			GetAnnouncements con = new GetAnnouncements();
+			
+			Notification[]  announce = null;
+			for(int i = 0; i <courses.length; i++){
+				try {
+					announce = con.getAnnouncements(courses[i].getId());
+				} catch (Exception e) {
+					e.printStackTrace();
+				} 
+				
+				//adding the announcements to the list
+				for(int j = 0; j < announce.length; j++){
+					announcements.add(announce[j].getText());
+				}
 			}
+			
+			ArrayAdapter<String> la = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, announcements);
+			lview.setAdapter(la);
 		}
-		
-		ArrayAdapter<String> la = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, announcements);
-		lview.setAdapter(la);
-		
 	}
 	
 	/**DONE(FOR NOW)
@@ -622,7 +625,8 @@ public class MainActivity extends Activity {
 						RemovingAnAnnouncement removeCon = new RemovingAnAnnouncement();
 						Notification note = new Notification();
 						note = announce2[arg2]; 
-		
+						System.out.println("index = " + arg2);
+						System.out.println("index = " + note.getText());
 						try {
 							if(removeCon.deleteAnnouncment(note.getId())){
 								setTeacher_Main_Page(course);
@@ -636,7 +640,7 @@ public class MainActivity extends Activity {
 						
 					}
 				});
-				
+				announce = announce2;
 		}
 	}
 	
@@ -719,15 +723,9 @@ public class MainActivity extends Activity {
 								reg.setUserId(user.getId());
 								reg.setCourseId(course.getId()); 
 								reg.setStatus(RegistrationStatus.APPROVED);
-							} catch (ClientProtocolException e1) {
+							} catch (Exception e) {
 								// TODO Auto-generated catch block
-								e1.printStackTrace();
-							} catch (URISyntaxException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-							} catch (IOException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
+								e.printStackTrace();
 							}
 							
 
@@ -736,13 +734,7 @@ public class MainActivity extends Activity {
 							RegisterForCourse con2  = new RegisterForCourse();
 							try {
 								con2.postRegisterRequest(reg);
-							} catch (JsonGenerationException e) {
-								e.printStackTrace();
-							} catch (JsonMappingException e) {
-								e.printStackTrace();
-							} catch (URISyntaxException e) {
-								e.printStackTrace();
-							} catch (IOException e) {
+							} catch (Exception e) {
 								e.printStackTrace();
 							}
 						}
@@ -946,7 +938,7 @@ public class MainActivity extends Activity {
 						con2.postRegisterRequest(reg);
 					} catch (Exception e) {
 						e.printStackTrace();
-					} 
+					}
 				}
 			});
 			
@@ -1015,7 +1007,7 @@ public class MainActivity extends Activity {
 			});
 		}
 	}
-	/**(Needs to implement database)password 
+	/**Finished
 	 * Allows User to change some of their options
 	 */
 	public void setSettings_Page()
@@ -1047,18 +1039,12 @@ public class MainActivity extends Activity {
 					if(Password.getText().toString().equals(Passwordcheck.getText().toString())) 				//check to see if passwords entered are equal
 					{
 						PutPassword newPass = new PutPassword();
-						
 						try {
-							newPass.putPassword(Currentuser);
-						} catch (JsonGenerationException e) {
+							newPass.putPassword(Currentuser, Password.getText().toString());
+							Toast.makeText(MainActivity.this, "You have just changed your password", Toast.LENGTH_SHORT).show();
+						} catch (Exception e) {
 							e.printStackTrace();
-						} catch (JsonMappingException e) {
-							e.printStackTrace();
-						} catch (URISyntaxException e) {
-							e.printStackTrace();
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+						} 
 					}
 					else																						//Inform users that their passwords do not match each other
 					{
@@ -1083,18 +1069,15 @@ public class MainActivity extends Activity {
 				// Deletes the user's account FOREVER!!!
 				public void onClick(View v) 
 				{
-					//TODO: Delete the user's account FOREVER!!!
+					// Delete the user's account FOREVER!!!
 					DeleteUser delU = new DeleteUser();
-					
 					try {
 						delU.deleteUser(username);
-					} catch (ClientProtocolException e) {
-						e.printStackTrace();
-					} catch (URISyntaxException e) {
-						e.printStackTrace();
-					} catch (IOException e) {
+					} catch (Exception e) {
 						e.printStackTrace();
 					}
+					// goes back to homepage and resets the username
+					setDefaultView();
 				}
 			});
 			

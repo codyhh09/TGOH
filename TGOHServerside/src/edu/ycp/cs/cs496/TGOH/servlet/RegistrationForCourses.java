@@ -59,7 +59,6 @@ private static final long serialVersionUID = 1L;
 
 		getUserfromRegistration con = new getUserfromRegistration();
 		User userId = con.getUserfromRegistration(Integer.parseInt(user));
-
 		
 		GetCourseById cont = new GetCourseById();
 		Courses course = cont.getCourse(courseId);

@@ -91,7 +91,7 @@ public class RealDatabase implements IDatabase{
 	}
 
 	@Override
-	public User getUser(final String Username) {
+	public User getUser(final String username) {
 		return executeTransaction(new Transaction<User>() {
 			@Override
 			public User execute(Connection conn) throws SQLException {
@@ -100,7 +100,7 @@ public class RealDatabase implements IDatabase{
 				
 				try {
 					stmt = conn.prepareStatement("select users.* from users where users.username = ?");
-					stmt.setString(1, Username);
+					stmt.setString(1, username);
 					
 					resultSet = stmt.executeQuery();
 					
@@ -201,6 +201,36 @@ public class RealDatabase implements IDatabase{
 			}
 		});
 	}
+	
+	@Override
+	public Courses getCourseByName(final String coursename) {
+		return executeTransaction(new Transaction<Courses>() {
+			@Override
+			public Courses execute(Connection conn) throws SQLException {
+				PreparedStatement stmt = null;
+				ResultSet resultSet = null;
+				
+				try {
+					stmt = conn.prepareStatement("select courses.* from courses where courses.coursename = ?");
+					stmt.setString(1, coursename);
+					
+					resultSet = stmt.executeQuery();
+					
+					if (!resultSet.next()) {
+						// No such item
+						return null;
+					}
+					
+					Courses course = new Courses();
+					loadCourse(course, resultSet, 1);
+					return course;
+				} finally {
+					DBUtil.closeQuietly(resultSet);
+					DBUtil.closeQuietly(stmt);
+				}
+			}
+		});
+	}
 
 	@Override
 	public void addCourse(final Courses course) {
@@ -237,7 +267,6 @@ public class RealDatabase implements IDatabase{
 				}
 			}
 		});
-		
 	}
 
 	@Override
@@ -554,8 +583,31 @@ public class RealDatabase implements IDatabase{
 	
 	@Override
 
-	public void changePass(String password) {
-		// TODO Auto-generated method stub
+	public void changePass(final String username, final String password) {
+		executeTransaction(new Transaction<User>() {
+				@Override
+				public User execute(Connection conn) throws SQLException {
+					PreparedStatement stmt = null;
+					ResultSet keys = null;
+
+					try {					
+						stmt = conn.prepareStatement("update users set users.password = ? where users.username = ? "  // FIXME:+  security issue    // only update score if new score is higher
+								);
+
+						stmt.setString(1, password);
+						stmt.setString(2,  username);
+
+						stmt.executeUpdate();
+						
+						User user = new User();
+						
+						return user;
+					} finally {
+						DBUtil.closeQuietly(stmt);
+						DBUtil.closeQuietly(keys);
+					}
+				}
+		});
 	}
 	
 	public<ResultType> ResultType executeTransaction(Transaction<ResultType> txn) {
@@ -903,11 +955,5 @@ public class RealDatabase implements IDatabase{
 		db.loadRegInitialUserData();
 		db.loadNoteInitialUserData();
 		System.out.println("Done!");
-	}
-
-	@Override
-	public Courses getCourseByName(String coursename) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

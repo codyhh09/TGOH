@@ -5,8 +5,8 @@ import edu.ycp.cs.cs496.TGOH.pesist.IDatabase;
 import edu.ycp.cs.cs496.TGOH.temp.User;
 
 public class PutPasswordController {
-	public void changePass(String password){
+	public void changePass(String username, String password){
 		IDatabase db = Database.getInstance();
-		db.changePass(password);
+		db.changePass(username, password);
 	}
 }

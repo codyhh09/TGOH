@@ -14,7 +14,7 @@ public interface IDatabase {
  */
 	public void addUser(User user);
 	
-	public User getUser(String Username);
+	public User getUser(String username);
 	
 	public User getUserfromRegistration(int Username);
 	
@@ -50,6 +50,6 @@ public interface IDatabase {
 	
 	public Notification getNotification(int id);
 	
-	public void changePass(String password);
+	public void changePass(final String username, final String password);
 
 }
