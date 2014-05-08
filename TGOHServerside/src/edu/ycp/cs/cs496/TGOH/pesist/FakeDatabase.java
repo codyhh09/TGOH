@@ -235,7 +235,6 @@ public class FakeDatabase implements IDatabase {
 
 	@Override
 	public Courses getCourseByName(String coursename) {
-		// TODO Auto-generated method stub
 		for(Courses x : courses){
 			if(x.getCourse().equals(coursename)){
 				return x;
