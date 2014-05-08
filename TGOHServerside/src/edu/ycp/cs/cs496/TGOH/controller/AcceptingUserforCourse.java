@@ -7,8 +7,8 @@ import edu.ycp.cs.cs496.TGOH.temp.Registration;
 import edu.ycp.cs.cs496.TGOH.temp.User;
 
 public class AcceptingUserforCourse {
-	public Registration acceptingUserforCourse(User user, Courses course){
+	public void acceptingUserforCourse(User user, Courses course){
 		IDatabase db = Database.getInstance();
-		return db.AcceptingUserforCourse(user, course);
+		db.AcceptingUserforCourse(user, course);
 	}
 }

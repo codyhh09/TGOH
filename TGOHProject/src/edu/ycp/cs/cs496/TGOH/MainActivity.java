@@ -907,18 +907,12 @@ public class MainActivity extends Activity {
 					Courses course = new Courses();
 					course.setCourse(newCourse.getText().toString());
 					course.setTeacher(username);
-					
 					try {
 						con.postCourse(course);
 						Toast.makeText(MainActivity.this, "Added: " + newCourse.getText().toString(), Toast.LENGTH_SHORT).show();
 					} catch (Exception e) {
 						e.printStackTrace();
 					} 
-					//Add the teacher to the course
-					Registration reg = new Registration(); 
-					reg.setUserId(Currentuser.getId());
-					RegistrationStatus regStat = null; 
-					reg.setStatus(regStat.APPROVED); 
 					
 					GetCourseByName con1 = new GetCourseByName();
 					
@@ -928,15 +922,8 @@ public class MainActivity extends Activity {
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					} 
+				
 					
-					reg.setCourseId(course2.getId());
-					RegisterForCourse con2  = new RegisterForCourse();
-					
-					try {
-						con2.postRegisterRequest(reg);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
 				}
 			});
 			

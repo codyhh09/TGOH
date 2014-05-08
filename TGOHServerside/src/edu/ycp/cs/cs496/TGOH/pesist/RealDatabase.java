@@ -31,6 +31,9 @@ public class RealDatabase implements IDatabase{
 
 	private static final int MAX_ATTEMPTS = 10;
 	
+	/*
+	 * Done
+	 */
 	@Override
 	public void addUser(final User user) {
 		executeTransaction(new Transaction<Boolean>() {
@@ -68,7 +71,9 @@ public class RealDatabase implements IDatabase{
 		});
 	}
 
-	// fixing
+	/*
+	 * Done
+	 */
 	@Override 
 	public boolean deleteUser(final String user) {
 		return executeTransaction(new Transaction<Boolean>() {
@@ -90,6 +95,9 @@ public class RealDatabase implements IDatabase{
 		});
 	}
 
+	/*
+	 * Done
+	 */
 	@Override
 	public User getUser(final String username) {
 		return executeTransaction(new Transaction<User>() {
@@ -120,6 +128,9 @@ public class RealDatabase implements IDatabase{
 		});
 	}
 	
+	/*
+	 * Done
+	 */
 	@Override
 	public Courses getCourse(final int coursename) {
 		return executeTransaction(new Transaction<Courses>() {
@@ -150,6 +161,9 @@ public class RealDatabase implements IDatabase{
 		});
 	}
 
+	/*
+	 * Done
+	 */
 	@Override
 	public void deleteCourse(final int Coursename) {
 		executeTransaction(new Transaction<Boolean>() {
@@ -172,6 +186,9 @@ public class RealDatabase implements IDatabase{
 		});
 	}
 
+	/*
+	 * Done
+	 */
 	@Override
 	public List<Courses> getCoursefromUser(final int user) {
 		return executeTransaction(new Transaction<List<Courses>>() {
@@ -202,6 +219,9 @@ public class RealDatabase implements IDatabase{
 		});
 	}
 	
+	/*
+	 * Done
+	 */
 	@Override
 	public Courses getCourseByName(final String coursename) {
 		return executeTransaction(new Transaction<Courses>() {
@@ -232,6 +252,9 @@ public class RealDatabase implements IDatabase{
 		});
 	}
 
+	/*
+	 * Done
+	 */
 	@Override
 	public void addCourse(final Courses course) {
 		executeTransaction(new Transaction<Boolean>() {
@@ -258,8 +281,10 @@ public class RealDatabase implements IDatabase{
 					}
 					
 					course.setId(generatedKeys.getInt(1));
-					System.out.println("New item has id " + course.getId());
-					
+					System.out.println("New Course has id " + course.getId());
+					Registration reg = registerUserForCourse(new Registration(getUser(course.getTeacher()).getId(), course.getId()));
+					reg.setStatus(RegistrationStatus.TEACHER);
+					AcceptingUserforCourse(getUser(course.getTeacher()), course);
 					return true;
 				} finally {
 					DBUtil.closeQuietly(generatedKeys);
@@ -269,6 +294,9 @@ public class RealDatabase implements IDatabase{
 		});
 	}
 
+	/*
+	 * Done
+	 */
 	@Override
 	public List<Courses> getAllCourse() {
 		return executeTransaction(new Transaction<List<Courses>>() {
@@ -300,8 +328,11 @@ public class RealDatabase implements IDatabase{
 		});
 	}
 
+	/*
+	 * Done
+	 */
 	@Override
-	public Registration registerUserForCourse(final int user, final int course) {
+	public Registration registerUserForCourse(final Registration reg) {
 		return executeTransaction(new Transaction<Registration>() {
 			@Override
 			public Registration execute(Connection conn) throws SQLException {
@@ -310,10 +341,9 @@ public class RealDatabase implements IDatabase{
 				
 				try {
 					stmt = conn.prepareStatement(
-							"insert into registrations (userid, courseid) values (?, ?)",
+							"insert into registrations (userid, courseid, type) values (?, ?, ?)",
 							PreparedStatement.RETURN_GENERATED_KEYS
 					);
-					Registration reg = new Registration(user,course);
 					storeRegistrationNoId(reg, stmt, 1);
 
 					// Attempt to insert the item
@@ -337,7 +367,9 @@ public class RealDatabase implements IDatabase{
 		});
 	}
 
-	//fixme
+	/*
+	 * Done
+	 */
 	@Override
 	public void RemovingUserFromCourse(final User user, final Courses course) {
 		executeTransaction(new Transaction<Boolean>() {
@@ -360,6 +392,9 @@ public class RealDatabase implements IDatabase{
 		});
 	}
 	
+	/*
+	 * Done
+	 */
 	@Override
 	public User getUserfromRegistration(final int Username) {
 		return executeTransaction(new Transaction<User>() {
@@ -389,7 +424,10 @@ public class RealDatabase implements IDatabase{
 			}
 		});
 	}
-
+	
+	/*
+	 * Done
+	 */
 	@Override
 	public Registration findUserForCourse(final User user, final Courses course) {
 		return executeTransaction(new Transaction<Registration>() {
@@ -421,13 +459,39 @@ public class RealDatabase implements IDatabase{
 		});
 	}
 
-	// updating
+	/*
+	 * Done
+	 */
 	@Override
-	public Registration AcceptingUserforCourse(User user, Courses course) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public void AcceptingUserforCourse(final User user, final Courses course) {
+		executeTransaction(new Transaction<Registration>() {
+			@Override
+			public Registration execute(Connection conn) throws SQLException {
+				PreparedStatement stmt = null;
+				ResultSet keys = null;
 
+				try {					
+					stmt = conn.prepareStatement("update registrations set registrations.type = ? where registrations.userid = ? and registrations.courseid = ?"  // FIXME:+  security issue    // only update score if new score is higher
+							);
+					stmt.setInt(1, RegistrationStatus.APPROVED.ordinal());
+					stmt.setInt(2, user.getId());
+					stmt.setInt(3,  course.getId());
+
+					stmt.executeUpdate();
+				} finally {
+					DBUtil.closeQuietly(stmt);
+					DBUtil.closeQuietly(keys);
+				}
+				
+				Registration reg = new Registration();
+				return reg;
+			}
+		});
+	}
+	
+	/*
+	 * Done
+	 */
 	@Override
 	public List<User> getPendingUserforCourse(final int course) {
 		return executeTransaction(new Transaction<List<User>>() {
@@ -458,7 +522,9 @@ public class RealDatabase implements IDatabase{
 		});
 	}
 	
-
+	/*
+	 * Done
+	 */
 	@Override
 	public void removeNotification(final int id) {
 		executeTransaction(new Transaction<Boolean>() {
@@ -481,6 +547,9 @@ public class RealDatabase implements IDatabase{
 		});
 	}
 
+	/*
+	 * Done
+	 */
 	@Override
 	public Notification addNotification(final int courseId, final String text) {
 		return executeTransaction(new Transaction<Notification>() {
@@ -518,6 +587,9 @@ public class RealDatabase implements IDatabase{
 		});
 	}
 
+	/*
+	 * Done
+	 */
 	@Override
 	public List<Notification> getNotificationForCourse(final int courseId) {
 		return executeTransaction(new Transaction<List<Notification>>() {
@@ -551,6 +623,9 @@ public class RealDatabase implements IDatabase{
 		});
 	}
 
+	/*
+	 * Done
+	 */
 	@Override
 	public Notification getNotification(final int id) {
 		return executeTransaction(new Transaction<Notification>() {
@@ -581,8 +656,10 @@ public class RealDatabase implements IDatabase{
 		});
 	}
 	
+	/*
+	 * Done
+	 */
 	@Override
-
 	public void changePass(final String username, final String password) {
 		executeTransaction(new Transaction<User>() {
 				@Override
@@ -591,7 +668,7 @@ public class RealDatabase implements IDatabase{
 					ResultSet keys = null;
 
 					try {					
-						stmt = conn.prepareStatement("update users set users.password = ? where users.username = ? "  // FIXME:+  security issue    // only update score if new score is higher
+						stmt = conn.prepareStatement("update users set users.password = ? where users.username = ? "
 								);
 
 						stmt.setString(1, password);
@@ -765,7 +842,6 @@ public class RealDatabase implements IDatabase{
 							"  id integer primary key not null generated always as identity," +
 							"  userid integer unique," +
 							"  courseid integer unique, " +
-							//"  type enum('PENDING', 'ACCEPTED') not null default 'PENDING" +  // ask for help for this one.
 							"  type integer not null default 0" +
 							")"
 					);
@@ -873,10 +949,6 @@ public class RealDatabase implements IDatabase{
 	}
 
 	protected void storeUserNoId(User user, PreparedStatement stmt, int index) throws SQLException {
-		// Note that we are assuming that the Item does not have a valid id,
-		// and so are not attempting to store the (invalid) id.
-		// This is the preferred approach when inserting a new row into
-		// a table in which a unique id is automatically generated.
 		stmt.setString(index++, user.getUserName());
 		stmt.setString(index++, user.getFirstName());
 		stmt.setString(index++, user.getLastName());
@@ -885,28 +957,16 @@ public class RealDatabase implements IDatabase{
 	}
 	
 	protected void storeCourseNoId(Courses course, PreparedStatement stmt, int index) throws SQLException {
-		// Note that we are assuming that the Item does not have a valid id,
-		// and so are not attempting to store the (invalid) id.
-		// This is the preferred approach when inserting a new row into
-		// a table in which a unique id is automatically generated.
 		stmt.setString(index++, course.getCourse());
 	}
 	
 	protected void storeRegistrationNoId(Registration reg, PreparedStatement stmt, int index) throws SQLException {
-		// Note that we are assuming that the Item does not have a valid id,
-		// and so are not attempting to store the (invalid) id.
-		// This is the preferred approach when inserting a new row into
-		// a table in which a unique id is automatically generated.
 		stmt.setInt(index++, reg.getUserId());
 		stmt.setInt(index++, reg.getCourseId());
 		stmt.setInt(index++, reg.getStatus().ordinal());
 	}
 	
 	protected void storeNotNoId(Notification not, PreparedStatement stmt, int index) throws SQLException {
-		// Note that we are assuming that the Item does not have a valid id,
-		// and so are not attempting to store the (invalid) id.
-		// This is the preferred approach when inserting a new row into
-		// a table in which a unique id is automatically generated.
 		stmt.setInt(index++, not.getCourseId());
 		stmt.setString(index++, not.getText());
 	}
@@ -929,7 +989,6 @@ public class RealDatabase implements IDatabase{
 		RegistrationStatus status = statusValues[resultSet.getInt(index++)];
 		reg.setStatus(status);
 	}
-	
 	
 	protected void loadCourse(Courses item, ResultSet resultSet, int index) throws SQLException {
 		item.setId(resultSet.getInt(index++));
@@ -956,4 +1015,5 @@ public class RealDatabase implements IDatabase{
 		db.loadNoteInitialUserData();
 		System.out.println("Done!");
 	}
+
 }

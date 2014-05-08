@@ -10,11 +10,15 @@ import javax.servlet.http.HttpServletResponse;
 
 import edu.ycp.cs.cs496.TGOH.JSON.JSON;
 import edu.ycp.cs.cs496.TGOH.controller.AddingANewCourse;
+import edu.ycp.cs.cs496.TGOH.controller.AddingCoursesToUser;
 import edu.ycp.cs.cs496.TGOH.controller.GetCourseById;
+import edu.ycp.cs.cs496.TGOH.controller.GetUserController;
 import edu.ycp.cs.cs496.TGOH.controller.RemovingACourse;
 import edu.ycp.cs.cs496.TGOH.controller.getAllCourses;
+import edu.ycp.cs.cs496.TGOH.controller.getUserfromRegistration;
 import edu.ycp.cs.cs496.TGOH.controller.gettingACourse;
 import edu.ycp.cs.cs496.TGOH.temp.Courses;
+import edu.ycp.cs.cs496.TGOH.temp.User;
 
 public class CoursesPage extends HttpServlet {
 private static final long serialVersionUID = 1L;
@@ -62,9 +66,11 @@ private static final long serialVersionUID = 1L;
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
 		Courses course = JSON.getObjectMapper().readValue(req.getReader(), Courses.class);
+		
 		// Use a GetUser controller to find the item in the database
 		AddingANewCourse controller = new AddingANewCourse();
 		controller.addCourse(course);
+
 		// Set status code and content type
 		resp.setStatus(HttpServletResponse.SC_OK);
 		resp.setContentType("application/json");

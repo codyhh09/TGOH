@@ -7,7 +7,7 @@ import java.util.List;
 public class Courses {
 	private int id;
 	private String Coursename;
-	private int Teacher; // maybe should be user id of instructor?
+	private String Teacher; // maybe should be user id of instructor?
 	
 	public Courses(){
 		
@@ -33,11 +33,11 @@ public class Courses {
 		return Coursename;
 	}
 	
-	public void setTeacher(int string) {
+	public void setTeacher(String string) {
 		Teacher = string;
 	}
 	
-	public int getTeacher() {
+	public String getTeacher() {
 		return Teacher;
 	}
 }

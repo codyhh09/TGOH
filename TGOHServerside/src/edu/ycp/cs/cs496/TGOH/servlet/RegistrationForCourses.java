@@ -86,7 +86,7 @@ private static final long serialVersionUID = 1L;
 		Registration reg = JSON.getObjectMapper().readValue(req.getReader(), Registration.class);
 		// Use a GetUser controller to find the item in the database
 		AddingCoursesToUser con = new AddingCoursesToUser();
-		con.addingRegistrationToUser(reg.getUserId(), reg.getCourseId());
+		con.addingRegistrationToUser(reg);
 		// Set status code and content type
 		resp.setStatus(HttpServletResponse.SC_OK);
 		resp.setContentType("application/json");
@@ -161,14 +161,14 @@ private static final long serialVersionUID = 1L;
 			Courses course = cont.getCourse(courseId);
 			
 			AcceptingUserforCourse controller = new AcceptingUserforCourse();
-			Registration reg = controller.acceptingUserforCourse(userId, course);
+			controller.acceptingUserforCourse(userId, course);
 			
 			// Set status code and content type
 			resp.setStatus(HttpServletResponse.SC_OK);
 			resp.setContentType("application/json");
 			
 			// writing the operation out.
-			JSON.getObjectMapper().writeValue(resp.getWriter(), reg);
+			JSON.getObjectMapper().writeValue(resp.getWriter(),userId);
 		}
 	}
 }

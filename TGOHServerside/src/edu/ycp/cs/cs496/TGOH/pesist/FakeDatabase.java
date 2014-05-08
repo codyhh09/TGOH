@@ -32,13 +32,13 @@ public class FakeDatabase implements IDatabase {
 		Courses c = new Courses();
 		c.setId(courseCounter++);
 		c.setCourse("Introduction to Something");
-		c.setTeacher(1);
+		c.setTeacher("Babcock");
 		courses.add(c);
 		
 		Courses c1 = new Courses();
 		c1.setId(courseCounter++);
 		c1.setCourse("Introduction to Something Else");
-		c1.setTeacher(2);
+		c1.setTeacher("Hovemeyer");
 		courses.add(c1);
 
 		registrations = new ArrayList<Registration>();
@@ -141,11 +141,8 @@ public class FakeDatabase implements IDatabase {
 		courses.remove(Coursename-1);
 	}
 
-	public Registration registerUserForCourse(int user, int course) {
-		Registration reg = new Registration();
+	public Registration registerUserForCourse(Registration reg) {
 		reg.setId(registrationCounter++);
-		reg.setUserId(user);
-		reg.setCourseId(course);
 		reg.setStatus(RegistrationStatus.PENDING);
 		registrations.add(reg);
 		return reg;
@@ -165,10 +162,9 @@ public class FakeDatabase implements IDatabase {
 		return null;
 	}
 	
-	public Registration AcceptingUserforCourse(User user, Courses course){
+	public void AcceptingUserforCourse(User user, Courses course){
 		Registration reg = findUserForCourse(user, course);
 		reg.setStatus(RegistrationStatus.APPROVED);
-		return reg;
 	}
 
 	public List<Courses> getCoursefromUser(int user){
