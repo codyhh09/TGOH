@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Tue May 06 12:15:45 EDT 2014:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.10.2.0 - (1582446): instance a816c00e-0145-d251-c58a-0000034fa048 
+on database directory H:\git\TGOH\TGOHServerside\test.db with class loader sun.misc.Launcher$AppClassLoader@6f1a7e7f 
+Loaded from file:/H:/git/TGOH/TGOHServerside/derby.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.7.0_07-b11
+user.dir=H:\git\TGOH\TGOHServerside
+os.name=Windows 7
+os.arch=amd64
+os.version=6.1
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
