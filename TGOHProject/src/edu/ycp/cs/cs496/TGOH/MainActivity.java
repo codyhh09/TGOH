@@ -611,36 +611,47 @@ public class MainActivity extends Activity {
 				for(int j = 0; j < announce.length; j++){
 					announcements.add(announce[j].getText());
 				}
-				
+				if(!announcements.isEmpty()){
 				//add strings to a list adapter to be displayed
 				announcements.add(announcmentText.getText().toString());
 				ArrayAdapter<String> la = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, announcements);
 				lview.setAdapter(la);
 				final Notification[] announce2 = announce;
-				lview.setOnItemClickListener(new OnItemClickListener() {
-					@Override
-					public void onItemClick(AdapterView<?> arg0, View view, int arg2, long arg3) {
-						//pull item from listview - delete announcement
-						
-						RemovingAnAnnouncement removeCon = new RemovingAnAnnouncement();
-						Notification note = new Notification();
-						note = announce2[arg2]; 
-						System.out.println("index = " + arg2);
-						System.out.println("index = " + note.getText());
-						try {
-							if(removeCon.deleteAnnouncment(note.getId())){
-								setTeacher_Main_Page(course);
-							}else{
-								Toast.makeText(MainActivity.this, "Internal Error, Try Again" , Toast.LENGTH_SHORT).show();
+				
+				System.out.println("" + announcements.get(0));
+				if(announcements.isEmpty()){
+					Toast.makeText(MainActivity.this, "Internal Error, Try Again" , Toast.LENGTH_SHORT).show();
+				}else
+				{
+					lview.getEmptyView();
+					lview.setOnItemClickListener(new OnItemClickListener() 
+					{
+						@Override
+						public void onItemClick(AdapterView<?> arg0, View view, int arg2, long arg3)
+						{
+							//pull item from listview - delete announcement
+							
+							RemovingAnAnnouncement removeCon = new RemovingAnAnnouncement();
+							Notification note = new Notification();
+							if(arg2 >= 0){
+								note = announce2[arg2]; 
 							}
-						} catch (Exception e) {
-							e.printStackTrace();
-							Toast.makeText(MainActivity.this, "Internal Error." , Toast.LENGTH_SHORT).show();
+							try {
+								if(removeCon.deleteAnnouncment(note.getId())){
+									setTeacher_Main_Page(course);
+								}else{
+									Toast.makeText(MainActivity.this, "Internal Error, Try Again" , Toast.LENGTH_SHORT).show();
+								}
+							} catch (Exception e) {
+								e.printStackTrace();
+								Toast.makeText(MainActivity.this, "No announcements to show." , Toast.LENGTH_SHORT).show();
+							}						
 						}
-						
-					}
-				});
-				announce = announce2;
+					});
+					
+					announce = announce2;
+				}
+				}
 		}
 	}
 	
