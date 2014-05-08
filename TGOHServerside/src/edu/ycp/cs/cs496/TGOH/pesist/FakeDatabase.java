@@ -34,6 +34,12 @@ public class FakeDatabase implements IDatabase {
 		c.setCourse("Introduction to Something");
 		c.setTeacher("Babcock");
 		courses.add(c);
+		
+		Courses c1 = new Courses();
+		c1.setId(courseCounter++);
+		c1.setCourse("Introduction to Something Else");
+		c1.setTeacher("Hovemeyer");
+		courses.add(c1);
 
 		registrations = new ArrayList<Registration>();
 //		Registration reg = new Registration();
@@ -49,13 +55,33 @@ public class FakeDatabase implements IDatabase {
 		reg2.setCourseId(1);
 		reg2.setStatus(RegistrationStatus.APPROVED);
 		registrations.add(reg2);
-
+		
+		Registration reg3 = new Registration();
+		reg3.setId(registrationCounter++);
+		reg3.setUserId(1);
+		reg3.setCourseId(2);
+		reg3.setStatus(RegistrationStatus.APPROVED);
+		registrations.add(reg3);
+		
 		notifications = new ArrayList<Notification>();
 		Notification not = new Notification();
 		not.setText("going for a hike");
-		not.setId(1);
+		not.setId(notCounter);
 		not.setCourseId(1);
 		notifications.add(not);
+		
+		//notifications = new ArrayList<Notification>();
+		Notification not2 = new Notification();
+		not2.setText("whew! That was exhausting");
+		not2.setId(notCounter++);
+		not2.setCourseId(1);
+		notifications.add(not2);
+		
+		Notification not3 = new Notification();
+		not3.setText("Welp, I better go for another one now.");
+		not3.setId(notCounter++);
+		not3.setCourseId(2);
+		notifications.add(not3);
 	}
 
 	public void addUser(User user) {
@@ -75,7 +101,7 @@ public class FakeDatabase implements IDatabase {
 	// getting a user
 	public User getUserfromRegistration(int Username) {
 		for (User user1 : users) {
-			if (user1.getId()==Username) {
+			if (user1.getUserName().equals(Username)) {
 				// return a copy
 				return user1;
 			}
@@ -84,11 +110,13 @@ public class FakeDatabase implements IDatabase {
 	}
 
 	// deleting a user
-	public boolean deleteUser(User user) {
-		if(users.remove(getUser(user.getUserName())))
-			return true;
-		else 
-			return false;
+	public boolean deleteUser(String user) {
+		for(User temp : users){
+			if(temp.getUserName().equals(user)){
+				return users.remove(getUser(user));
+			}
+		}
+		return false;
 	}
 
 	public Courses getCourse(int coursename){
@@ -202,11 +230,17 @@ public class FakeDatabase implements IDatabase {
 	
 	public void removeNotification(int id){
 		notifications.remove(id);
+		notCounter--;
 	}
 
 	@Override
 	public Courses getCourseByName(String coursename) {
 		// TODO Auto-generated method stub
+		for(Courses x : courses){
+			if(x.getCourse().equals(coursename)){
+				return x;
+			}
+		}
 		return null;
 	}
 }

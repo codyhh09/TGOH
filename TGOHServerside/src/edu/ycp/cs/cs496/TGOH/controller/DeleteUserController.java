@@ -5,7 +5,7 @@ import edu.ycp.cs.cs496.TGOH.pesist.IDatabase;
 import edu.ycp.cs.cs496.TGOH.temp.User;
 
 public class DeleteUserController {
-	public void deleteUser(User user){
+	public void deleteUser(String user){
 		IDatabase db = Database.getInstance();
 		db.deleteUser(user);
 	}

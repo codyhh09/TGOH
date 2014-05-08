@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import edu.ycp.cs.cs496.TGOH.JSON.JSON;
 import edu.ycp.cs.cs496.TGOH.controller.AddingANewCourse;
+import edu.ycp.cs.cs496.TGOH.controller.GetCourseById;
 import edu.ycp.cs.cs496.TGOH.controller.RemovingACourse;
 import edu.ycp.cs.cs496.TGOH.controller.getAllCourses;
 import edu.ycp.cs.cs496.TGOH.controller.gettingACourse;
@@ -39,9 +40,9 @@ private static final long serialVersionUID = 1L;
 			pathInfo = pathInfo.substring(1);
 		}
 		// Use a GettingACourse controller to find the item in the database
-		int courseId = Integer.parseInt(pathInfo);
+		//int courseId = Integer.parseInt(pathInfo);
 		gettingACourse controller = new gettingACourse();
-		Courses course = controller.getCourse(courseId);
+		Courses course = controller.getCourse(pathInfo);
 		
 		if (course == null) {
 			// No such item, so return a NOT FOUND response
@@ -76,11 +77,10 @@ private static final long serialVersionUID = 1L;
 	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String pathInfo = req.getPathInfo();
 		if (pathInfo == null || pathInfo.equals("") || pathInfo.equals("/")) {
-			resp.getWriter().write("we delete nothing");
-		}else{
 			// Set status code and content type
 			resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			resp.setContentType("application/json");
+			resp.getWriter().write("we delete nothing");
 			return;
 		}
 		
@@ -98,7 +98,7 @@ private static final long serialVersionUID = 1L;
 		resp.setStatus(HttpServletResponse.SC_OK);
 		resp.setContentType("application/json");	
 			
-		gettingACourse controller = new gettingACourse();
+		GetCourseById controller = new GetCourseById();
 			
 		JSON.getObjectMapper().writeValue(resp.getWriter(), controller.getCourse(courseId));
 

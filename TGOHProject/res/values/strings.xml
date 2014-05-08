@@ -43,4 +43,9 @@
     <string name="lblSettings">Settings</string>
     <string name="btnNewPass">Change Password</string>
     <string name="btnDeleteUser">Delete Account</string>
+    <string name="deleteindtruct">Touch an announcement to delete</string>
+    <string name="AddAnnouncementslbl">Add</string>
+    <string name="removeAnnouncementslbl">Remove Announcements</string>
+    <string name="enterstring">Enter a new announcement here is click the \"Add\" button to add a new announcement.</string>
+    <string name="removeannouncelbl">Click on an announcement below to remove it.</string>
 </resources>

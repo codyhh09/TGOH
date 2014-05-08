@@ -18,7 +18,7 @@ public interface IDatabase {
 	
 	public User getUserfromRegistration(int Username);
 	
-	public boolean deleteUser(User user);
+	public boolean deleteUser(String user);
 	
 	public Courses getCourse(int coursename);
 	

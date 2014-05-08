@@ -8,9 +8,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.net.ssl.SSLEngineResult.Status;
+
 import edu.ycp.cs.cs496.TGOH.temp.Courses;
 import edu.ycp.cs.cs496.TGOH.temp.Notification;
 import edu.ycp.cs.cs496.TGOH.temp.Registration;
+import edu.ycp.cs.cs496.TGOH.temp.RegistrationStatus;
 import edu.ycp.cs.cs496.TGOH.temp.User;
 
 public class RealDatabase implements IDatabase{
@@ -67,23 +70,20 @@ public class RealDatabase implements IDatabase{
 
 	// fixing
 	@Override 
-	public boolean deleteUser(final User user) {
+	public boolean deleteUser(final String user) {
 		return executeTransaction(new Transaction<Boolean>() {
 			@Override
 			public Boolean execute(Connection conn) throws SQLException {
 				PreparedStatement stmt = null;
-				ResultSet resultSet = null;
 				
 				try {
 					stmt = conn.prepareStatement("Delete from users where users.username = ?");
-					stmt.setString(1, user.getUserName());
+					stmt.setString(1, user);
 					
+					int numRowsAffected = stmt.executeUpdate();
 					
-					
-					
-					return true;
+					return numRowsAffected != 0;
 				} finally {
-					DBUtil.closeQuietly(resultSet);
 					DBUtil.closeQuietly(stmt);
 				}
 			}
@@ -151,9 +151,25 @@ public class RealDatabase implements IDatabase{
 	}
 
 	@Override
-	public void deleteCourse(int Coursename) {
-		// TODO Auto-generated method stub
-		
+	public void deleteCourse(final int Coursename) {
+		executeTransaction(new Transaction<Boolean>() {
+			@Override
+			public Boolean execute(Connection conn) throws SQLException {
+				PreparedStatement stmt = null;
+				//ResultSet resultSet = null;
+				
+				try {
+					stmt = conn.prepareStatement("Delete from courses where courses.id = ?");
+					stmt.setInt(1, Coursename);
+					
+					int numRowsAffected = stmt.executeUpdate();
+					
+					return numRowsAffected != 0;
+				} finally {
+					DBUtil.closeQuietly(stmt);
+				}
+			}
+		});
 	}
 
 	@Override
@@ -294,9 +310,25 @@ public class RealDatabase implements IDatabase{
 
 	//fixme
 	@Override
-	public void RemovingUserFromCourse(User user, Courses course) {
-		// TODO Auto-generated method stub
-		
+	public void RemovingUserFromCourse(final User user, final Courses course) {
+		executeTransaction(new Transaction<Boolean>() {
+			@Override
+			public Boolean execute(Connection conn) throws SQLException {
+				PreparedStatement stmt = null;
+				
+				try {
+					stmt = conn.prepareStatement("Delete from registrations where registrations.userid = ? and registrations.courseid = ?");
+					stmt.setInt(1, user.getId());
+					stmt.setInt(2, course.getId());
+					
+					int numRowsAffected = stmt.executeUpdate();
+					
+					return numRowsAffected != 0;
+				} finally {
+					DBUtil.closeQuietly(stmt);
+				}
+			}
+		});
 	}
 	
 	@Override
@@ -338,9 +370,9 @@ public class RealDatabase implements IDatabase{
 				ResultSet resultSet = null;
 				
 				try {
-					stmt = conn.prepareStatement("select registrations.* from registrations where registrations.userid = ? and registration.courseid = ?");
-					stmt.setObject(1, user);
-					stmt.setObject(2, course);
+					stmt = conn.prepareStatement("select registrations.* from registrations where registrations.userid = ? and registrations.courseid = ?");
+					stmt.setInt(1, user.getId());
+					stmt.setInt(2, course.getId());
 					
 					resultSet = stmt.executeQuery();
 					
@@ -399,9 +431,25 @@ public class RealDatabase implements IDatabase{
 	
 
 	@Override
-	public void removeNotification(int id) {
-		// TODO Auto-generated method stub
-		
+	public void removeNotification(final int id) {
+		executeTransaction(new Transaction<Boolean>() {
+			@Override
+			public Boolean execute(Connection conn) throws SQLException {
+				PreparedStatement stmt = null;
+				//ResultSet resultSet = null;
+				
+				try {
+					stmt = conn.prepareStatement("Delete from notifications where notifications.id = ?");
+					stmt.setInt(1, id);
+					
+					int numRowsAffected = stmt.executeUpdate();
+					
+					return numRowsAffected != 0;
+				} finally {
+					DBUtil.closeQuietly(stmt);
+				}
+			}
+		});
 	}
 
 	@Override
@@ -664,8 +712,9 @@ public class RealDatabase implements IDatabase{
 							"create table registrations (" +
 							"  id integer primary key not null generated always as identity," +
 							"  userid integer unique," +
-							"  courseid integer unique" +
+							"  courseid integer unique, " +
 							//"  type enum('PENDING', 'ACCEPTED') not null default 'PENDING" +  // ask for help for this one.
+							"  type integer not null default 0" +
 							")"
 					);
 					
@@ -736,7 +785,7 @@ public class RealDatabase implements IDatabase{
 				PreparedStatement stmt = null;
 				
 				try {
-					stmt = conn.prepareStatement("insert into registrations (userid, courseid) values (?,?)");
+					stmt = conn.prepareStatement("insert into registrations (userid, courseid, type) values (?,?,?)");
 					storeRegistrationNoId(new Registration(1,1), stmt, 1);
 					stmt.addBatch();
 					
@@ -798,6 +847,7 @@ public class RealDatabase implements IDatabase{
 		// a table in which a unique id is automatically generated.
 		stmt.setInt(index++, reg.getUserId());
 		stmt.setInt(index++, reg.getCourseId());
+		stmt.setInt(index++, reg.getStatus().ordinal());
 	}
 	
 	protected void storeNotNoId(Notification not, PreparedStatement stmt, int index) throws SQLException {
@@ -823,6 +873,9 @@ public class RealDatabase implements IDatabase{
 		reg.setUserId(resultSet.getInt(index++));
 		reg.setCourseId(resultSet.getInt(index++));
 		//reg.setStatus(resultSet.get(index++));
+		RegistrationStatus[] statusValues = RegistrationStatus.values();
+		RegistrationStatus status = statusValues[resultSet.getInt(index++)];
+		reg.setStatus(status);
 	}
 	
 	

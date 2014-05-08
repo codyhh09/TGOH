@@ -13,7 +13,7 @@ public class Registration {
 	public Registration(int userId, int courseId) {
 		this.userId = userId;
 		this.courseId = courseId;
-		status = null;
+		status = RegistrationStatus.PENDING;
 		id = 0;
 	}
 	
