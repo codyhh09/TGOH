@@ -6,13 +6,13 @@ public class User {
 	private String FirstName;
 	private String LastName;
 	private String Password;
-	private boolean type;
+	private UserType type;
 	
 	public User(){
 		
 	}
 	
-	public User(String Username, String FirstName, String LastName, String Password, boolean type){
+	public User(String Username, String FirstName, String LastName, String Password, UserType type){
 		this.Username = Username;
 		this.FirstName = FirstName;
 		this.LastName = LastName;
@@ -59,42 +59,12 @@ public class User {
 	public void setPassword(String password) {
 		Password = password;
 	}
-	
-	public boolean getType() {
+
+	public UserType getType() {
 		return type;
 	}
 	
-	public void setType(boolean type) {
+	public void setType(UserType type) {
 		this.type = type;
 	}
-/*	
-	public List<String> getCourse() {
-		return course;
-	}
-	
-	public void setCourse(List<String> class1) {
-		course = class1;
-	}
-	
-	public void addCourse(String usercourse){
-		course.add(usercourse);
-	}
-	
-	public String findCourse(String Course){
-		String y = null;
-		for(String x : course){
-			if(x.equals(Course))
-				y = x;
-		}
-		return y;
-	}
-	
-	public boolean removeCourse(String Coursename){
-		if(course.remove(Coursename))
-			return true;
-		else
-			return false;
-		
-	}
-*/
 }

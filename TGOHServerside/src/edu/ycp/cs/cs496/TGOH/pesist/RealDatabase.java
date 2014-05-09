@@ -15,6 +15,7 @@ import edu.ycp.cs.cs496.TGOH.temp.Notification;
 import edu.ycp.cs.cs496.TGOH.temp.Registration;
 import edu.ycp.cs.cs496.TGOH.temp.RegistrationStatus;
 import edu.ycp.cs.cs496.TGOH.temp.User;
+import edu.ycp.cs.cs496.TGOH.temp.UserType;
 
 public class RealDatabase implements IDatabase{
 	static {
@@ -31,7 +32,7 @@ public class RealDatabase implements IDatabase{
 
 	private static final int MAX_ATTEMPTS = 10;
 	
-	/*
+	/**
 	 * Done
 	 */
 	@Override
@@ -748,16 +749,14 @@ public class RealDatabase implements IDatabase{
 				
 				try {
 					// Note that the 'id' column is an autoincrement primary key,
-					// so SQLite will automatically assign an id when rows
-					// are inserted.
 					stmt = conn.prepareStatement(
 							"create table users (" +
 							"  id integer primary key not null generated always as identity," +
-							"  username varchar(30) unique," +
-							"  firstname varchar(30) unique," +
-							"  lastname varchar(30) unique," +
-							"  password varchar(30) unique," +
-							"  type boolean not null " +
+							"  username varchar(30)," +
+							"  firstname varchar(30)," +
+							"  lastname varchar(30)," +
+							"  password varchar(30)," +
+							"  type integer not null default 0" +
 							")"
 
 					);
@@ -779,13 +778,12 @@ public class RealDatabase implements IDatabase{
 				PreparedStatement stmt = null;
 				
 				try {
-					// Note that the 'id' column is an autoincrement primary key,
-					// so SQLite will automatically assign an id when rows
-					// are inserted.				
+					// Note that the 'id' column is an autoincrement primary key,				
 					stmt = conn.prepareStatement(
 							"create table courses (" +
 							"  id integer primary key not null generated always as identity," +
-							"  coursename varchar(10) unique" +
+							"  coursename varchar(10) unique," +
+							"  teachername varchar(10)" +
 							")"
 					);
 					
@@ -806,14 +804,12 @@ public class RealDatabase implements IDatabase{
 				PreparedStatement stmt = null;
 				
 				try {
-					// Note that the 'id' column is an autoincrement primary key,
-					// so SQLite will automatically assign an id when rows
-					// are inserted.				
+					// Note that the 'id' column is an autoincrement primary key,			
 					stmt = conn.prepareStatement(
 							"create table notifications (" +
 							"  id integer primary key not null generated always as identity," +
-							"  courseid integer unique," +
-							"  text varchar(100) unique" +
+							"  courseid integer," +
+							"  text varchar(100)" +
 							")"
 					);
 					
@@ -840,8 +836,8 @@ public class RealDatabase implements IDatabase{
 					stmt = conn.prepareStatement(
 							"create table registrations (" +
 							"  id integer primary key not null generated always as identity," +
-							"  userid integer unique," +
-							"  courseid integer unique, " +
+							"  userid integer," +
+							"  courseid integer, " +
 							"  type integer not null default 0" +
 							")"
 					);
@@ -864,11 +860,13 @@ public class RealDatabase implements IDatabase{
 				
 				try {
 					stmt = conn.prepareStatement("insert into users (username, firstname, lastname, password, type) values (?, ?, ?, ?, ?)");
-					storeUserNoId(new User("Apples","Apples","Apples","Apples", true), stmt, 1);
+					storeUserNoId(new User("Apples","Apples","Apples","Apples", UserType.MASTER), stmt, 1);
 					stmt.addBatch();
-					storeUserNoId(new User("Oranges","Oranges","Oranges","Oranges",false), stmt, 1);
+					storeUserNoId(new User("Oranges","Oranges","Oranges","Oranges",UserType.STUDENT), stmt, 1);
 					stmt.addBatch();
-					storeUserNoId(new User("Pomegranates","Pomegranates","Pomegranates","Pomegranates",true), stmt, 1);
+					storeUserNoId(new User("Pomegranates","Pomegranates","Pomegranates","Pomegranates",UserType.ACCEPTEDTEACHER), stmt, 1);
+					stmt.addBatch();
+					storeUserNoId(new User("Babcock","Babcock","Babcock","Babcock",UserType.ACCEPTEDTEACHER), stmt, 1);
 					stmt.addBatch();
 					
 					stmt.executeBatch();
@@ -888,12 +886,13 @@ public class RealDatabase implements IDatabase{
 				PreparedStatement stmt = null;
 				
 				try {
-					stmt = conn.prepareStatement("insert into courses (coursename) values (?)");
-					storeCourseNoId(new Courses("CS360"), stmt, 1);
+					stmt = conn.prepareStatement("insert into courses (coursename, teachername) values (?, ?)");
+					
+					storeCourseNoId(new Courses("CS360", "Babcock"), stmt, 1);
 					stmt.addBatch();
-					storeCourseNoId(new Courses("CS101"), stmt, 1);
+					storeCourseNoId(new Courses("CS101", "Babcock"), stmt, 1);
 					stmt.addBatch();
-					storeCourseNoId(new Courses("CS201"), stmt, 1);
+					storeCourseNoId(new Courses("CS201", "Hovemeyer"), stmt, 1);
 					stmt.addBatch();
 					
 					stmt.executeBatch();
@@ -915,6 +914,8 @@ public class RealDatabase implements IDatabase{
 				try {
 					stmt = conn.prepareStatement("insert into registrations (userid, courseid, type) values (?,?,?)");
 					storeRegistrationNoId(new Registration(1,1), stmt, 1);
+					stmt.addBatch();
+					storeRegistrationNoId(new Registration(4,1), stmt, 1);
 					stmt.addBatch();
 					
 					stmt.executeBatch();
@@ -953,11 +954,12 @@ public class RealDatabase implements IDatabase{
 		stmt.setString(index++, user.getFirstName());
 		stmt.setString(index++, user.getLastName());
 		stmt.setString(index++, user.getPassword());
-		stmt.setBoolean(index++, user.getType());
+		stmt.setInt(index++, user.getType().ordinal());
 	}
 	
 	protected void storeCourseNoId(Courses course, PreparedStatement stmt, int index) throws SQLException {
 		stmt.setString(index++, course.getCourse());
+		stmt.setString(index++, course.getTeacher());
 	}
 	
 	protected void storeRegistrationNoId(Registration reg, PreparedStatement stmt, int index) throws SQLException {
@@ -971,34 +973,36 @@ public class RealDatabase implements IDatabase{
 		stmt.setString(index++, not.getText());
 	}
 	
-	protected void loadUser(User item, ResultSet resultSet, int index) throws SQLException {
-		item.setId(resultSet.getInt(index++));
-		item.setUserName(resultSet.getString(index++));
-		item.setFirstName(resultSet.getString(index++));
-		item.setLastName(resultSet.getString(index++));
-		item.setPassword(resultSet.getString(index++));
-		item.setType(resultSet.getBoolean(index++));
+	protected void loadUser(User user, ResultSet resultSet, int index) throws SQLException {
+		user.setId(resultSet.getInt(index++));
+		user.setUserName(resultSet.getString(index++));
+		user.setFirstName(resultSet.getString(index++));
+		user.setLastName(resultSet.getString(index++));
+		user.setPassword(resultSet.getString(index++));
+		UserType[] statusValues = UserType.values();
+		UserType status = statusValues[resultSet.getInt(index++)];
+		user.setType(status);
 	}
 	
 	protected void loadRegistration(Registration reg, ResultSet resultSet, int index) throws SQLException {
 		reg.setId(resultSet.getInt(index++));
 		reg.setUserId(resultSet.getInt(index++));
 		reg.setCourseId(resultSet.getInt(index++));
-		//reg.setStatus(resultSet.get(index++));
 		RegistrationStatus[] statusValues = RegistrationStatus.values();
 		RegistrationStatus status = statusValues[resultSet.getInt(index++)];
 		reg.setStatus(status);
 	}
 	
-	protected void loadCourse(Courses item, ResultSet resultSet, int index) throws SQLException {
-		item.setId(resultSet.getInt(index++));
-		item.setCourse(resultSet.getString(index++));
+	protected void loadCourse(Courses course, ResultSet resultSet, int index) throws SQLException {
+		course.setId(resultSet.getInt(index++));
+		course.setCourse(resultSet.getString(index++));
+		course.setTeacher(resultSet.getString(index++));
 	}
 	
-	protected void loadNot(Notification item, ResultSet resultSet, int index) throws SQLException {
-		item.setId(resultSet.getInt(index++));
-		item.setCourseId(resultSet.getInt(index++));
-		item.setText(resultSet.getString(index++));
+	protected void loadNot(Notification not, ResultSet resultSet, int index) throws SQLException {
+		not.setId(resultSet.getInt(index++));
+		not.setCourseId(resultSet.getInt(index++));
+		not.setText(resultSet.getString(index++));
 	}
 	
 	public static void main(String[] args) {

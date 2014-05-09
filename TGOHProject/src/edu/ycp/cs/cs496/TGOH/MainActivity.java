@@ -1,7 +1,12 @@
 package edu.ycp.cs.cs496.TGOH;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -36,6 +41,7 @@ import edu.ycp.cs.cs496.TGOH.temp.Notification;
 import edu.ycp.cs.cs496.TGOH.temp.Registration;
 import edu.ycp.cs.cs496.TGOH.temp.RegistrationStatus;
 import edu.ycp.cs.cs496.TGOH.temp.User;
+import edu.ycp.cs.cs496.TGOH.temp.UserType;
 
 public class MainActivity extends Activity {
 	public String username = "";
@@ -58,9 +64,8 @@ public class MainActivity extends Activity {
      * This will take us to the sign in page
      */
 	public void setDefaultView(){
-		username = "";
 		Currentuser = null;
-		
+		username = null;
 		setContentView(R.layout.activity_main);
 		
 		Button Signin = (Button) findViewById(R.id.btnSignIn);
@@ -84,25 +89,21 @@ public class MainActivity extends Activity {
 				
 				String userName = Username.getText().toString();
 				String passWord = Password.getText().toString();
-        		
 				GetUser controller = new GetUser();
         			//get a user object from the database
 					try {	
 						Currentuser = controller.getUser(userName);
 
 						if(Currentuser.getPassword().equals(passWord)){
-								username = userName;
-								if(username.equals("master")){
-										setMaster_Notification_Page();
-								}else{
-									if(Currentuser.getType()){
-										//user is student, go to student page
-										setClass_Selection_Page();
-									}else{
-										//user is teacher, go to teacher page
-										setTeacher_Selection_Page();
-									}
-								}
+							username = userName;
+							if(Currentuser.getType().equals(UserType.MASTER))
+								setMaster_Notification_Page();
+							else if(Currentuser.getType().equals(UserType.ACCEPTEDTEACHER))
+								setTeacher_Selection_Page();
+							else if(Currentuser.getType().equals(UserType.STUDENT))
+								setClass_Selection_Page();														//user is student, go to student page
+							else
+								Toast.makeText(MainActivity.this, "Still waiting for the Master to Accept you as a teacher", Toast.LENGTH_SHORT).show();
 						}else{
 							//check to make sure the userName and passWord for the user are both correct
 							Toast.makeText(MainActivity.this, "Invalid Username/Password", Toast.LENGTH_SHORT).show();
@@ -140,13 +141,19 @@ public class MainActivity extends Activity {
 				if(Password.getText().toString().equals(Passwordcheck.getText().toString())){   //check to see if passwords entered are equal
 					adduser controller = new adduser();
 					GetUser con = new GetUser();
-					boolean type = isStudent.isChecked();
+					UserType type;
+					if(isStudent.isChecked()){
+						 type = UserType.STUDENT;
+					}else{
+						type = UserType.PENDINGTEACHER;
+					}
+						
 					try {
 						if(con.getUser(Username.getText().toString()).equals(null)){
 							if(controller.postUser(Username.getText().toString(), Password.getText().toString(),FirstName.getText().toString(), LastName.getText().toString(), type)){
 								// toast box: right
 								setDefaultView();
-								if(type == true){
+								if(type.equals(UserType.STUDENT)){
 									Toast.makeText(MainActivity.this, "Welcome to TGOH. Please log in.", Toast.LENGTH_SHORT).show();
 								}else{
 									Toast.makeText(MainActivity.this, "You have requested to be a teacher. Your request is pending...", Toast.LENGTH_SHORT).show();
@@ -329,7 +336,7 @@ public class MainActivity extends Activity {
 		}
 	}
 
-	/**(Needs to implement database)
+	/**done (for now)
 	 * Page students use to request a new class
 	 */
 	public void setRequest_Page() {
@@ -376,11 +383,11 @@ public class MainActivity extends Activity {
 					
 					//pull the list of user courses from the database
 					GetCoursesfromUser con = new GetCoursesfromUser(); 
+					GetUser user = new GetUser();
 					List<String> classes = new ArrayList<String>();
-					
 
 					try {
-						courses = con.getCourses(Currentuser.getId());
+						courses = con.getCourses(user.getUser(Teachername).getId());
 						
 						for(int i = 0; i< courses.length; i++){
 							classes.add(courses[i].getCourse());
@@ -397,23 +404,17 @@ public class MainActivity extends Activity {
 								@Override
 								public void onItemClick(AdapterView<?> arg0, View view, int arg2, long arg3) {
 									CharSequence msg = "You selected " + ((TextView) view).getText();
-									
+
 									Registration reg = new Registration();
-									RegisterForCourse con = new RegisterForCourse();
+									reg.setCourseId(courses[arg2].getId());
 									reg.setUserId(Currentuser.getId());
-									reg.setStatus(RegistrationStatus.PENDING); 
-									
-									for(int i = 0; i < 7;i++){
-										if(courses[i].getCourse() == ((TextView) view).getText().toString()){
-											reg.setCourseId(courses[i].getId());
-										}
-									}
-									
+									reg.setStatus(RegistrationStatus.PENDING);
+									RegisterForCourse con = new RegisterForCourse();
 									try {
 										con.postRegisterRequest(reg);
 									} catch (Exception e) {
 										e.printStackTrace();
-									}
+									} 
 									Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
 								}
 							});
@@ -729,10 +730,7 @@ public class MainActivity extends Activity {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
-							
 
-							
-							
 							RegisterForCourse con2  = new RegisterForCourse();
 							try {
 								con2.postRegisterRequest(reg);
@@ -1080,7 +1078,7 @@ public class MainActivity extends Activity {
 				@Override
 				public void onClick(View v)
 				{
-					if(Currentuser.getType())
+					if(Currentuser.getType().equals(UserType.STUDENT))
 					{
 						//user is student, go to student page
 						setClass_Selection_Page();

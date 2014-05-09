@@ -7,6 +7,7 @@ import edu.ycp.cs.cs496.TGOH.temp.Notification;
 import edu.ycp.cs.cs496.TGOH.temp.Registration;
 import edu.ycp.cs.cs496.TGOH.temp.RegistrationStatus;
 import edu.ycp.cs.cs496.TGOH.temp.User;
+import edu.ycp.cs.cs496.TGOH.temp.UserType;
 
 
 public class FakeDatabase implements IDatabase {
@@ -21,9 +22,9 @@ public class FakeDatabase implements IDatabase {
 
 	public FakeDatabase() {
 		users = new ArrayList<User>();
-		User user = new User("d","d","d","d",true);
+		User user = new User("d","d","d","d",UserType.STUDENT);
 		user.setId(1);
-		User user1 = new User("c","c","c","c",false);
+		User user1 = new User("c","c","c","c",UserType.ACCEPTEDTEACHER);
 		user1.setId(2);
 		users.add(user1);
 		users.add(user);
@@ -42,12 +43,12 @@ public class FakeDatabase implements IDatabase {
 		courses.add(c1);
 
 		registrations = new ArrayList<Registration>();
-//		Registration reg = new Registration();
-//		reg.setId(registrationCounter++);
-//		reg.setUserId(1);
-//		//reg.setCourseId(1);
-//		reg.setStatus(RegistrationStatus.PENDING);
-//		registrations.add(reg);
+		Registration reg = new Registration();
+		reg.setId(registrationCounter++);
+		reg.setUserId(1);
+		reg.setCourseId(1);
+		reg.setStatus(RegistrationStatus.PENDING);
+		registrations.add(reg);
 		
 		Registration reg2 = new Registration();
 		reg2.setId(registrationCounter++);
@@ -70,7 +71,6 @@ public class FakeDatabase implements IDatabase {
 		not.setCourseId(1);
 		notifications.add(not);
 		
-		//notifications = new ArrayList<Notification>();
 		Notification not2 = new Notification();
 		not2.setText("whew! That was exhausting");
 		not2.setId(notCounter++);
@@ -195,7 +195,7 @@ public class FakeDatabase implements IDatabase {
 
 	@Override
 	public void changePass(String username, String password) {
-		//TODO: Implement
+		getUser(username).setPassword(password);
 	}
 	
 	public Notification getNotification(int id){

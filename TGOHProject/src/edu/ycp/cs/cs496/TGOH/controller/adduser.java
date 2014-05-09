@@ -18,15 +18,16 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 
 import edu.ycp.cs.cs496.TGOH.JSON.JSON;
 import edu.ycp.cs.cs496.TGOH.temp.User;
+import edu.ycp.cs.cs496.TGOH.temp.UserType;
 
 
 public class adduser {
 
-	public boolean postUser(String Username, String Password, String FirstName, String LastName, boolean type) throws URISyntaxException, JsonGenerationException, JsonMappingException, IOException {
+	public boolean postUser(String Username, String Password, String FirstName, String LastName, UserType type) throws URISyntaxException, JsonGenerationException, JsonMappingException, IOException {
 		return makePostRequest(Username, Password,FirstName, LastName, type);
 	}
 	
-	public boolean makePostRequest(String Username, String Password, String FirstName, String LastName, boolean type) throws URISyntaxException, JsonGenerationException, JsonMappingException, IOException {
+	public boolean makePostRequest(String Username, String Password, String FirstName, String LastName, UserType type) throws URISyntaxException, JsonGenerationException, JsonMappingException, IOException {
 		// Create HTTP client
  		HttpClient client = new DefaultHttpClient();
 		

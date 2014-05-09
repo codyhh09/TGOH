@@ -44,7 +44,6 @@ private static final long serialVersionUID = 1L;
 			pathInfo = pathInfo.substring(1);
 		}
 		// Use a GettingACourse controller to find the item in the database
-		//int courseId = Integer.parseInt(pathInfo);
 		gettingACourse controller = new gettingACourse();
 		Courses course = controller.getCourse(pathInfo);
 		

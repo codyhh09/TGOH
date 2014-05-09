@@ -13,8 +13,9 @@ public class Courses {
 		
 	} 
 	
-	public Courses(String Coursename){
+	public Courses(String Coursename, String Teacher){
 		this.Coursename = Coursename;
+		this.Teacher = Teacher;
 	}
 	
 	public void setId(int id) {
