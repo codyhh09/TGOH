@@ -5,6 +5,8 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.client.ClientProtocolException;
+
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
@@ -24,6 +26,7 @@ import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import edu.ycp.cs.cs496.TGOH.controller.AcceptUser4Course;
 import edu.ycp.cs.cs496.TGOH.controller.AddAnnouncement;
 import edu.ycp.cs.cs496.TGOH.controller.AddCourse;
 import edu.ycp.cs.cs496.TGOH.controller.DeleteCourse;
@@ -31,6 +34,7 @@ import edu.ycp.cs.cs496.TGOH.controller.DeleteUser;
 import edu.ycp.cs.cs496.TGOH.controller.GetAnnouncements;
 import edu.ycp.cs.cs496.TGOH.controller.GetCourseByName;
 import edu.ycp.cs.cs496.TGOH.controller.GetCoursesfromUser;
+import edu.ycp.cs.cs496.TGOH.controller.GetPendingUsersforCourse;
 import edu.ycp.cs.cs496.TGOH.controller.GetUser;
 import edu.ycp.cs.cs496.TGOH.controller.PutPassword;
 import edu.ycp.cs.cs496.TGOH.controller.RegisterForCourse;
@@ -670,19 +674,18 @@ public class MainActivity extends Activity {
 			
 			//TODO: pull notifications from database
 			List<String> list = new ArrayList<String>();
-		//	List<String> courseName = new ArrayList<String>();
+			GetPendingUsersforCourse con = new GetPendingUsersforCourse();
+			User user[] = null;
 			
-			list.add("d");
-			list.add("bar");
-			list.add("baz");
-			list.add("boz");
-			list.add("gaz");
-			list.add("goz");
-			list.add("roz");
-			list.add("Carl");
-			list.add("Cody");
-			list.add("codyhh09");
-			list.add("Bobo");
+			try {
+				user = con.getUser(course.getId());
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			} 
+			
+			for(int i = 0; i< user.length; i++){
+				list.add(user[i].getUserName());
+			}
 			
 			int counter = 0;
 			ArrayList<CheckBox> checks = new ArrayList<CheckBox>();
@@ -694,9 +697,7 @@ public class MainActivity extends Activity {
 			for (String students : list)
 			{
 				CheckBox check = new CheckBox(this);
-				check.setLayoutParams(new LayoutParams(
-						LayoutParams.WRAP_CONTENT,
-						LayoutParams.WRAP_CONTENT));
+				check.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 				check.setText(students);
 				checks.add(check);
 				
@@ -720,21 +721,13 @@ public class MainActivity extends Activity {
 						if(students.isChecked())
 						{
 							GetUser UConn = new GetUser();
-							Registration reg = new Registration(); 
+							AcceptUser4Course au = new AcceptUser4Course();
+							
 							try {
-								User user = UConn.getUser(students.getText().toString());	
-								reg.setUserId(user.getId());
-								reg.setCourseId(course.getId()); 
-								reg.setStatus(RegistrationStatus.APPROVED);
+								User user = UConn.getUser(students.getText().toString());
+								au.putUser(user.getUserName(), course.getCourse());
 							} catch (Exception e) {
 								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-
-							RegisterForCourse con2  = new RegisterForCourse();
-							try {
-								con2.postRegisterRequest(reg);
-							} catch (Exception e) {
 								e.printStackTrace();
 							}
 						}
