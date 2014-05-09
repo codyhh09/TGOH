@@ -1,6 +1,7 @@
 package edu.ycp.cs.cs496.TGOH.servlet;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -15,6 +16,7 @@ import edu.ycp.cs.cs496.TGOH.controller.AddUserController;
 import edu.ycp.cs.cs496.TGOH.controller.DeleteUserController;
 import edu.ycp.cs.cs496.TGOH.controller.GetUserController;
 import edu.ycp.cs.cs496.TGOH.controller.PutPasswordController;
+import edu.ycp.cs.cs496.TGOH.controller.getPendingTeachers;
 import edu.ycp.cs.cs496.TGOH.temp.User;
 
 public class Userpage extends HttpServlet{
@@ -23,10 +25,14 @@ public class Userpage extends HttpServlet{
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String pathInfo = req.getPathInfo();
 		if (pathInfo == null || pathInfo.equals("") || pathInfo.equals("/")) {
-			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			getPendingTeachers con = new getPendingTeachers();
+			List<User> user = con.getPT();
+			
+			resp.setStatus(HttpServletResponse.SC_OK);
 			resp.setContentType("text/plain");
-			resp.getWriter().println("Getting entire UserList not supported yet");
-			return;
+			resp.getWriter().println("Getting Pending Teachers");
+			JSON.getObjectMapper().writeValue(resp.getWriter(), user);
+			return ;
 		}
 		
 		// Get the user name

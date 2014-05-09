@@ -555,6 +555,46 @@ public class RealDatabase implements IDatabase{
 	 * Done
 	 */
 	@Override
+	public List<User> getPendingTeacher() {
+		return executeTransaction(new Transaction<List<User>>() {
+			@Override
+			public List<User> execute(Connection conn) throws SQLException {
+				PreparedStatement stmt = null;
+				ResultSet resultSet = null;
+				
+				try {
+					// Note: no 'where' clause, so all items will be returned
+					stmt = conn.prepareStatement("select users.* from users where users.type = ?");
+					stmt.setInt(1, UserType.PENDINGTEACHER.ordinal());
+					resultSet = stmt.executeQuery();
+
+					List<User> result = new ArrayList<User>();
+					while (resultSet.next()) {
+						User user = new User();
+						user.setId(resultSet.getInt(1));
+						user.setUserName(resultSet.getString(2));
+						user.setFirstName(resultSet.getString(3));
+						user.setLastName(resultSet.getString(4));
+						user.setPassword(resultSet.getString(5));
+						UserType[] statusValues = UserType.values();
+						UserType status = statusValues[resultSet.getInt(6)];
+						user.setType(status);
+						result.add(user);
+					}
+					
+					return result;
+				} finally {
+					DBUtil.closeQuietly(resultSet);
+					DBUtil.closeQuietly(stmt);
+				}
+			}
+		});
+	}
+	
+	/*
+	 * Done
+	 */
+	@Override
 	public void removeNotification(final int id) {
 		executeTransaction(new Transaction<Boolean>() {
 			@Override
@@ -948,10 +988,6 @@ public class RealDatabase implements IDatabase{
 					Registration reg = new Registration(2,1);
 					reg.setStatus(RegistrationStatus.PENDING);
 					storeRegistrationNoId(reg, stmt, 1);
-					stmt.addBatch();
-					Registration reg2 = new Registration(3,1);
-					reg2.setStatus(RegistrationStatus.PENDING);
-					storeRegistrationNoId(reg2, stmt, 1);
 					stmt.addBatch();
 					
 					stmt.executeBatch();

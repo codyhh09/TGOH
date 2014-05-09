@@ -1,14 +1,7 @@
 package edu.ycp.cs.cs496.TGOH;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.http.client.ClientProtocolException;
-
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -42,6 +35,8 @@ import edu.ycp.cs.cs496.TGOH.controller.RegisterForCourse;
 import edu.ycp.cs.cs496.TGOH.controller.RemovingAUserFromCourse;
 import edu.ycp.cs.cs496.TGOH.controller.RemovingAnAnnouncement;
 import edu.ycp.cs.cs496.TGOH.controller.adduser;
+import edu.ycp.cs.cs496.TGOH.controller.getRegforCourse;
+import edu.ycp.cs.cs496.TGOH.controller.gettingPendingTeachers;
 import edu.ycp.cs.cs496.TGOH.temp.Courses;
 import edu.ycp.cs.cs496.TGOH.temp.Notification;
 import edu.ycp.cs.cs496.TGOH.temp.Registration;
@@ -51,7 +46,6 @@ import edu.ycp.cs.cs496.TGOH.temp.UserType;
 
 public class MainActivity extends Activity {
 	protected static final View CurrentUser = null;
-	public String username = "";
 	public User Currentuser = null;
 	
 	@Override
@@ -72,7 +66,6 @@ public class MainActivity extends Activity {
      */
 	public void setDefaultView(){
 		Currentuser = null;
-		username = null;
 		setContentView(R.layout.activity_main);
 		
 		Button Signin = (Button) findViewById(R.id.btnSignIn);
@@ -102,7 +95,6 @@ public class MainActivity extends Activity {
 						Currentuser = controller.getUser(userName);
 
 						if(Currentuser.getPassword().equals(passWord)){
-							username = userName;
 							if(Currentuser.getType().equals(UserType.MASTER))
 								setMaster_Notification_Page();
 							else if(Currentuser.getType().equals(UserType.ACCEPTEDTEACHER))
@@ -192,7 +184,7 @@ public class MainActivity extends Activity {
 	 */
 	public void setClass_Selection_Page(){
 	
-		if(username.equals(""))
+		if(Currentuser == null)
 		{
 			Toast.makeText(MainActivity.this, "No one is logged in!" , Toast.LENGTH_SHORT).show();
 			setDefaultView();
@@ -281,7 +273,7 @@ public class MainActivity extends Activity {
 	 */
 	public void setStudent_Home_Page(Courses course)
 	{
-		if(username.equals(""))
+		if(Currentuser == null)
 		{
 			Toast.makeText(MainActivity.this, "No one is logged in!" , Toast.LENGTH_SHORT).show();
 			setDefaultView();
@@ -342,7 +334,7 @@ public class MainActivity extends Activity {
 	 * Page students use to request a new class
 	 */
 	public void setRequest_Page() {
-		if(username.equals(""))
+		if(Currentuser == null)
 		{
 			Toast.makeText(MainActivity.this, "No one is logged in!" , Toast.LENGTH_SHORT).show();
 			setDefaultView();
@@ -405,15 +397,22 @@ public class MainActivity extends Activity {
 					lview.setOnItemClickListener(new OnItemClickListener() {
 								@Override
 								public void onItemClick(AdapterView<?> arg0, View view, int arg2, long arg3) {
-									CharSequence msg = "You selected " + ((TextView) view).getText();
+									CharSequence msg = null;
 									// fix: adding it once.
-									Registration reg = new Registration();
-									reg.setCourseId(courses[arg2].getId());
-									reg.setUserId(Currentuser.getId());
-									reg.setStatus(RegistrationStatus.PENDING);
+
 									RegisterForCourse con = new RegisterForCourse();
-									try {
-										con.postRegisterRequest(reg);
+									getRegforCourse getting = new getRegforCourse();
+									try {	
+										if(getting.getregforCourse(Currentuser.getId(), courses[arg2].getId()) != null){
+											msg = "Already selected this course";
+										}else{
+											Registration reg = new Registration();
+											reg.setCourseId(courses[arg2].getId());
+											reg.setUserId(Currentuser.getId());
+											reg.setStatus(RegistrationStatus.PENDING);
+											con.postRegisterRequest(reg);
+											msg = "You selected " + ((TextView) view).getText();
+										}
 									} catch (Exception e) {
 										e.printStackTrace();
 									} 
@@ -434,7 +433,7 @@ public class MainActivity extends Activity {
 	 * @param courses 
 	 */
 	public void setSchedule_Page(Courses[] courses){
-		if(username.equals(""))
+		if(Currentuser == null)
 		{
 			Toast.makeText(MainActivity.this, "No one is logged in!" , Toast.LENGTH_SHORT).show();
 			setDefaultView();
@@ -496,7 +495,7 @@ public class MainActivity extends Activity {
 	 */
 	public void setTeacher_Main_Page(final Courses course)
 	{
-		if(username.equals(""))
+		if(Currentuser == null)
 		{
 			Toast.makeText(MainActivity.this, "No one is logged in!" , Toast.LENGTH_SHORT).show();
 			setDefaultView();
@@ -659,7 +658,7 @@ public class MainActivity extends Activity {
 	public void setTeacher_Notification_Page(final Courses course)
 	{
 		
-		if(username.equals(""))
+		if(Currentuser == null)
 		{
 			Toast.makeText(MainActivity.this, "No one is logged in!" , Toast.LENGTH_SHORT).show();
 			setDefaultView();
@@ -682,16 +681,14 @@ public class MainActivity extends Activity {
 			try {
 				
 				user = con.getUser(course.getId());	
-				for(int i = 0; i < 3; i++){
+				for(int i = 0; i < user.length; i++){
 					list.add(user[i].getUserName());
 					
 				}
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			} 
-			
-
-			
+		
 			int counter = 0;
 			ArrayList<CheckBox> checks = new ArrayList<CheckBox>();
 			
@@ -756,7 +753,7 @@ public class MainActivity extends Activity {
 
 							try {
 								User user = UConn.getUser(students.getText().toString());
-								con.deleteRegistration(user.getUserName(), course.getId());
+								con.deleteRegistration(user.getId(), course.getId());
 								Toast.makeText(MainActivity.this, "You just deleted "+ user.getUserName() +" from the course" , Toast.LENGTH_SHORT).show();
 							} catch (Exception e) {
 								// TODO Auto-generated catch block
@@ -798,7 +795,7 @@ public class MainActivity extends Activity {
 	 */
 	public void setTeacher_Selection_Page()
 	{
-		if(username.equals(""))
+		if(Currentuser == null)
 		{
 			Toast.makeText(MainActivity.this, "No one is logged in!" , Toast.LENGTH_SHORT).show();
 			setDefaultView();
@@ -879,7 +876,7 @@ public class MainActivity extends Activity {
 	 */
 	public void setCreate_Course()
 	{
-		if(username.equals(""))
+		if(Currentuser == null)
 		{
 			Toast.makeText(MainActivity.this, "No one is logged in!" , Toast.LENGTH_SHORT).show();
 			setDefaultView();
@@ -919,34 +916,40 @@ public class MainActivity extends Activity {
 				public void onClick(View v)
 				{
 					//add the course to the courses database
-					AddCourse con = new AddCourse(); 
-					Courses course = new Courses();
-					course.setCourse(newCourse.getText().toString());
-					course.setTeacher(username);
-					GetUser get = new GetUser();
-					RegisterForCourse reging = new RegisterForCourse();
-					Registration reg = new Registration();
-					GetCourseByName ce = new GetCourseByName();
-					User user;
-					
+					GetCourseByName cont = new GetCourseByName();
 					try {
-						if(con.postCourse(course)){
-							Toast.makeText(MainActivity.this, "Added: " + newCourse.getText().toString(), Toast.LENGTH_SHORT).show();
-							user = get.getUser(username);	
-							reg.setCourseId(ce.getCourse(newCourse.getText().toString()).getId());
-							reg.setUserId(user.getId());
-							reg.setStatus(RegistrationStatus.TEACHER);
-							if(reging.postRegisterRequest(reg))
-								Toast.makeText(MainActivity.this, "Added", Toast.LENGTH_SHORT).show();
-							else
-								Toast.makeText(MainActivity.this, "Error" + newCourse.getText().toString(), Toast.LENGTH_SHORT).show();	
-						}else
-							Toast.makeText(MainActivity.this, "Didn't added: " + newCourse.getText().toString(), Toast.LENGTH_SHORT).show();
-						setTeacher_Selection_Page();	
+						if(cont.getCourse(newCourse.getText().toString()) != null){
+							Toast.makeText(MainActivity.this, "This course already exists", Toast.LENGTH_SHORT).show();
+						}else{
+							AddCourse con = new AddCourse(); 
+							Courses course = new Courses();
+							course.setCourse(newCourse.getText().toString());
+							course.setTeacher(Currentuser.getUserName());
+							GetUser get = new GetUser();
+							RegisterForCourse reging = new RegisterForCourse();
+							Registration reg = new Registration();
+							GetCourseByName ce = new GetCourseByName();
+							User user;
+						
+							if(con.postCourse(course)){
+								Toast.makeText(MainActivity.this, "Added: " + newCourse.getText().toString(), Toast.LENGTH_SHORT).show();
+								user = get.getUser(Currentuser.getUserName());	
+								reg.setCourseId(ce.getCourse(newCourse.getText().toString()).getId());
+								reg.setUserId(user.getId());
+								reg.setStatus(RegistrationStatus.TEACHER);
+								if(reging.postRegisterRequest(reg))
+									Toast.makeText(MainActivity.this, "Added", Toast.LENGTH_SHORT).show();
+								else
+									Toast.makeText(MainActivity.this, "Error" + newCourse.getText().toString(), Toast.LENGTH_SHORT).show();	
+							}else
+								Toast.makeText(MainActivity.this, "Didn't added: " + newCourse.getText().toString(), Toast.LENGTH_SHORT).show();
+							setTeacher_Selection_Page();	
 
+						}
 					} catch (Exception e) {
+						// TODO Auto-generated catch block
 						e.printStackTrace();
-					}	
+					} 
 			
 				}
 
@@ -959,54 +962,102 @@ public class MainActivity extends Activity {
 	/**(implement database)notifications
 	 * the master's notification/homepage
 	 */
-	public void setMaster_Notification_Page()
-	{
-		if(username.equals(""))
-		{
+	public void setMaster_Notification_Page(){
+		if(Currentuser == null){
 			Toast.makeText(MainActivity.this, "No one is logged in!" , Toast.LENGTH_SHORT).show();
 			setDefaultView();
 		}
-		else
-		{
+		else{
 			setContentView(R.layout.master_notifications_page);
-			
 			Button LogOut = (Button) findViewById(R.id.button1);
+			Button Accept =(Button) findViewById(R.id.backbtn);
+			Button Deny = (Button) findViewById(R.id.submitbtn);
 			
-			//TODO: pull notifications from the database
-			List<String> list = new ArrayList<String>();
-			List<String> notifications = new ArrayList<String>();
+			gettingPendingTeachers con = new gettingPendingTeachers();
+			User[] user = null;
+			ArrayList<String> list = new ArrayList<String>();
 			
-			list.add("foo");
-			list.add("bar");
-			list.add("baz");
-			list.add("boz");
-			list.add("gaz");
-			list.add("goz");
-			list.add("roz");
-			list.add("Carl");
-			list.add("Cody");
-			list.add("codyhh09");
-			list.add("Bobo");
+			try {
+				
+				user = con.getPT();	
+				for(int i = 0; i < user.length; i++){
+					list.add(user[i].getUserName());
+				}
+				
+				
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			} 
+
+			int counter = 0;
+			ArrayList<CheckBox> checks = new ArrayList<CheckBox>();
 			
-			// Create Linear layout for ScrollView
 			// Access Linear layout for ScrollView
-			LinearLayout layout4Checks = (LinearLayout) findViewById(R.id.linearLayout1);
-					
+			LinearLayout layout4Checks = (LinearLayout) findViewById(R.id.linearLayout);
+			
 			//Add Check Box to go next to requests' names
-				for (String students : list)
-				{
-					CheckBox check = new CheckBox(this);
-					check.setLayoutParams(new LayoutParams(
-							LayoutParams.WRAP_CONTENT,
-							LayoutParams.WRAP_CONTENT));
-					check.setText(students);
-					
-					// Add heck to layout
-					layout4Checks.addView(check);
-				//checks.add(check);
-				//counter++;
+			for (String students : list)
+			{
+				CheckBox check = new CheckBox(this);
+				check.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+				check.setText(students);
+				checks.add(check);
+				
+				// Add check to layout
+				layout4Checks.addView(checks.get(counter));
+				counter++;
 			}
 			
+			final ArrayList<CheckBox> checkL2 = checks;
+			
+			//Accept Button
+			// Add accept button onClickListener
+			Accept.setOnClickListener(new View.OnClickListener(){
+				@Override
+				public void onClick(View v) {
+					for (CheckBox students : checkL2)
+					{
+						if(students.isChecked())
+						{
+
+							try {
+								
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+					}
+					setMaster_Notification_Page();
+				}
+			});
+			
+			//Add Deny Button
+			// Add Deny button onClickListener
+			Deny.setOnClickListener(new View.OnClickListener()
+			{
+				@Override
+				public void onClick(View v)
+				{
+					//TODO: Removes user from list.  Sends sad message to user.
+					for (CheckBox students : checkL2)
+					{
+						if(students.isChecked())
+						{
+
+							try {
+								
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+					}
+					setMaster_Notification_Page();
+				}
+			});
+			
+			//Log Off Button
 			LogOut.setOnClickListener(new View.OnClickListener()
 			{
 				@Override
@@ -1023,7 +1074,7 @@ public class MainActivity extends Activity {
 	 */
 	public void setSettings_Page()
 	{
-		if(username.equals(""))
+		if(Currentuser == null)
 		{
 			Toast.makeText(MainActivity.this, "No one is logged in!" , Toast.LENGTH_SHORT).show();
 			setDefaultView();
@@ -1083,7 +1134,7 @@ public class MainActivity extends Activity {
 					// Delete the user's account FOREVER!!!
 					DeleteUser delU = new DeleteUser();
 					try {
-						delU.deleteUser(username);
+						delU.deleteUser(Currentuser.getUserName());
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

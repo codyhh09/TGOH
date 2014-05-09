@@ -53,4 +53,6 @@ public interface IDatabase {
 	public void changePass(final String username, final String password);
 	
 	public Registration findreg(int id);
+
+	public List<User> getPendingTeacher();
 }

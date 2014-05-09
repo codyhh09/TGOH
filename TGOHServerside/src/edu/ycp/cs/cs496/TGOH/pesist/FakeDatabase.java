@@ -244,4 +244,10 @@ public class FakeDatabase implements IDatabase {
 	public Registration findreg(int id) {
 		return registrations.get(id);
 	}
+
+	@Override
+	public List<User> getPendingTeacher() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

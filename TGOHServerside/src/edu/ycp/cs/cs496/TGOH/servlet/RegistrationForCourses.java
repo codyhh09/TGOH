@@ -59,10 +59,10 @@ private static final long serialVersionUID = 1L;
 
 		getUserfromRegistration con = new getUserfromRegistration();
 		User userId = con.getUserfromRegistration(Integer.parseInt(user));
-		System.out.println(userId.getUserName());
+
 		GetCourseById cont = new GetCourseById();
 		Courses course = cont.getCourse(courseId);
-		System.out.println(course.getCourse());
+
 		findUserForCourse controller = new findUserForCourse();
 		Registration reg = controller.findUserforCourse(userId, course);
 		if (reg == null) {
