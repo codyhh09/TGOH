@@ -31,6 +31,7 @@ import edu.ycp.cs.cs496.TGOH.controller.AddAnnouncement;
 import edu.ycp.cs.cs496.TGOH.controller.AddCourse;
 import edu.ycp.cs.cs496.TGOH.controller.DeleteCourse;
 import edu.ycp.cs.cs496.TGOH.controller.DeleteUser;
+import edu.ycp.cs.cs496.TGOH.controller.DeletingARegistration;
 import edu.ycp.cs.cs496.TGOH.controller.GetAnnouncements;
 import edu.ycp.cs.cs496.TGOH.controller.GetCourseByName;
 import edu.ycp.cs.cs496.TGOH.controller.GetCoursesfromUser;
@@ -38,6 +39,7 @@ import edu.ycp.cs.cs496.TGOH.controller.GetPendingUsersforCourse;
 import edu.ycp.cs.cs496.TGOH.controller.GetUser;
 import edu.ycp.cs.cs496.TGOH.controller.PutPassword;
 import edu.ycp.cs.cs496.TGOH.controller.RegisterForCourse;
+import edu.ycp.cs.cs496.TGOH.controller.RemovingAUserFromCourse;
 import edu.ycp.cs.cs496.TGOH.controller.RemovingAnAnnouncement;
 import edu.ycp.cs.cs496.TGOH.controller.adduser;
 import edu.ycp.cs.cs496.TGOH.temp.Courses;
@@ -48,6 +50,7 @@ import edu.ycp.cs.cs496.TGOH.temp.User;
 import edu.ycp.cs.cs496.TGOH.temp.UserType;
 
 public class MainActivity extends Activity {
+	protected static final View CurrentUser = null;
 	public String username = "";
 	public User Currentuser = null;
 	
@@ -153,19 +156,14 @@ public class MainActivity extends Activity {
 					}
 						
 					try {
-						if(con.getUser(Username.getText().toString()).equals(null)){
-							if(controller.postUser(Username.getText().toString(), Password.getText().toString(),FirstName.getText().toString(), LastName.getText().toString(), type)){
-								// toast box: right
-								setDefaultView();
-								if(type.equals(UserType.STUDENT)){
-									Toast.makeText(MainActivity.this, "Welcome to TGOH. Please log in.", Toast.LENGTH_SHORT).show();
-								}else{
-									Toast.makeText(MainActivity.this, "You have requested to be a teacher. Your request is pending...", Toast.LENGTH_SHORT).show();
-								}
+						if(con.getUser(Username.getText().toString()) == null && controller.postUser(Username.getText().toString(), Password.getText().toString(),FirstName.getText().toString(), LastName.getText().toString(), type)){
+							// toast box: right
+							if(type.equals(UserType.STUDENT)){
+								Toast.makeText(MainActivity.this, "Welcome to TGOH. Please log in.", Toast.LENGTH_SHORT).show();
 							}else{
-								// toast box: error
-								Toast.makeText(MainActivity.this, "Error: try again", Toast.LENGTH_SHORT).show();
+								Toast.makeText(MainActivity.this, "You have requested to be a teacher. Your request is pending...", Toast.LENGTH_SHORT).show();
 							}
+							setDefaultView();
 						}else{
 							Toast.makeText(MainActivity.this, "Please select another username.", Toast.LENGTH_SHORT).show();
 						}
@@ -408,7 +406,7 @@ public class MainActivity extends Activity {
 								@Override
 								public void onItemClick(AdapterView<?> arg0, View view, int arg2, long arg3) {
 									CharSequence msg = "You selected " + ((TextView) view).getText();
-
+									// fix: adding it once.
 									Registration reg = new Registration();
 									reg.setCourseId(courses[arg2].getId());
 									reg.setUserId(Currentuser.getId());
@@ -541,10 +539,12 @@ public class MainActivity extends Activity {
 				{
 					//delete course
 					DeleteCourse con = new DeleteCourse(); 
+					RemovingAUserFromCourse cont = new RemovingAUserFromCourse();
 					try {
 						con.deleteCourse(course.getId());
+						cont.deleteRegristration(Currentuser.getId(), course.getId());
 						Toast.makeText(MainActivity.this, "Course Deleted!" , Toast.LENGTH_SHORT).show();
-						
+						setTeacher_Selection_Page();
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -652,12 +652,13 @@ public class MainActivity extends Activity {
 		}
 	}
 	
-	/**(needs to implement database
+	/**done (for now)
 	 * Displays the students who are pending for
 	 * a given course the teacher teaches
 	 */
 	public void setTeacher_Notification_Page(final Courses course)
 	{
+		
 		if(username.equals(""))
 		{
 			Toast.makeText(MainActivity.this, "No one is logged in!" , Toast.LENGTH_SHORT).show();
@@ -673,19 +674,23 @@ public class MainActivity extends Activity {
 			Button backButton = (Button) findViewById(R.id.btnback);
 			
 			//TODO: pull notifications from database
+			
 			List<String> list = new ArrayList<String>();
 			GetPendingUsersforCourse con = new GetPendingUsersforCourse();
-			User user[] = null;
+			User[] user = null;
 			
 			try {
-				user = con.getUser(course.getId());
+				
+				user = con.getUser(course.getId());	
+				for(int i = 0; i < 3; i++){
+					list.add(user[i].getUserName());
+					
+				}
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			} 
 			
-			for(int i = 0; i< user.length; i++){
-				list.add(user[i].getUserName());
-			}
+
 			
 			int counter = 0;
 			ArrayList<CheckBox> checks = new ArrayList<CheckBox>();
@@ -710,28 +715,27 @@ public class MainActivity extends Activity {
 			
 			//Accept Button
 			// Add accept button onClickListener
-			acceptButton.setOnClickListener(new View.OnClickListener()
-			{
+			acceptButton.setOnClickListener(new View.OnClickListener(){
 				@Override
-				public void onClick(View v) 
-				{
-					//TODO: Adds the course to the user's list of courses.  Removes user from list.
+				public void onClick(View v) {
 					for (CheckBox students : checkL2)
 					{
 						if(students.isChecked())
 						{
 							GetUser UConn = new GetUser();
 							AcceptUser4Course au = new AcceptUser4Course();
-							
+
 							try {
 								User user = UConn.getUser(students.getText().toString());
-								au.putUser(user.getUserName(), course.getCourse());
+								au.putUser(user.getUserName(), course.getId());
+								Toast.makeText(MainActivity.this, "You just added "+ user.getUserName() +" to the course" , Toast.LENGTH_SHORT).show();
 							} catch (Exception e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
 						}
 					}
+					setTeacher_Notification_Page(course);
 				}
 			});
 			
@@ -743,6 +747,24 @@ public class MainActivity extends Activity {
 				public void onClick(View v)
 				{
 					//TODO: Removes user from list.  Sends sad message to user.
+					for (CheckBox students : checkL2)
+					{
+						if(students.isChecked())
+						{
+							GetUser UConn = new GetUser();
+							DeletingARegistration con = new DeletingARegistration();
+
+							try {
+								User user = UConn.getUser(students.getText().toString());
+								con.deleteRegistration(user.getUserName(), course.getId());
+								Toast.makeText(MainActivity.this, "You just deleted "+ user.getUserName() +" from the course" , Toast.LENGTH_SHORT).show();
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+					}
+					setTeacher_Notification_Page(course);
 				}
 			});
 			
@@ -901,30 +923,34 @@ public class MainActivity extends Activity {
 					Courses course = new Courses();
 					course.setCourse(newCourse.getText().toString());
 					course.setTeacher(username);
+					GetUser get = new GetUser();
+					RegisterForCourse reging = new RegisterForCourse();
+					Registration reg = new Registration();
+					GetCourseByName ce = new GetCourseByName();
+					User user;
+					
 					try {
-						con.postCourse(course);
-						Toast.makeText(MainActivity.this, "Added: " + newCourse.getText().toString(), Toast.LENGTH_SHORT).show();
+						if(con.postCourse(course)){
+							Toast.makeText(MainActivity.this, "Added: " + newCourse.getText().toString(), Toast.LENGTH_SHORT).show();
+							user = get.getUser(username);	
+							reg.setCourseId(ce.getCourse(newCourse.getText().toString()).getId());
+							reg.setUserId(user.getId());
+							reg.setStatus(RegistrationStatus.TEACHER);
+							if(reging.postRegisterRequest(reg))
+								Toast.makeText(MainActivity.this, "Added", Toast.LENGTH_SHORT).show();
+							else
+								Toast.makeText(MainActivity.this, "Error" + newCourse.getText().toString(), Toast.LENGTH_SHORT).show();	
+						}else
+							Toast.makeText(MainActivity.this, "Didn't added: " + newCourse.getText().toString(), Toast.LENGTH_SHORT).show();
+						setTeacher_Selection_Page();	
+
 					} catch (Exception e) {
 						e.printStackTrace();
-					} 
-
-					//Add the teacher to the course
-					Registration reg = new Registration(); 
-					reg.setUserId(Currentuser.getId());
-					RegistrationStatus regStat = null; 
-					reg.setStatus(regStat.APPROVED); 
-					
-					GetCourseByName con1 = new GetCourseByName();
-					
-					Courses course2 = new Courses(); 
-					try {
-						course2 = con1.getCourse(newCourse.getText().toString());
-					} catch (Exception e1) {
-						e1.printStackTrace();
-					} 
-				
-					
+					}	
+			
 				}
+
+
 			});
 			
 		}

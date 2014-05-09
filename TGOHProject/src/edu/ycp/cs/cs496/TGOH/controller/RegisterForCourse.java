@@ -47,7 +47,7 @@ public class RegisterForCourse {
 			
 		// Execute request
 		HttpResponse response = client.execute(request);
-		
+		System.out.println(response.getStatusLine().getStatusCode());
 		if(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK){
 			return true;
 		}else{

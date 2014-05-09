@@ -22,11 +22,11 @@ import edu.ycp.cs.cs496.TGOH.temp.RegistrationStatus;
 import edu.ycp.cs.cs496.TGOH.temp.User;
 
 public class AcceptUser4Course {
-	public boolean putUser(String user, String course) throws URISyntaxException, JsonGenerationException, JsonMappingException, IOException {
+	public boolean putUser(String user, int course) throws URISyntaxException, JsonGenerationException, JsonMappingException, IOException {
 		return makePutUser(user, course);
 	}
 
-	private boolean makePutUser(String user, String course) throws URISyntaxException, JsonGenerationException, JsonMappingException, IOException {
+	private boolean makePutUser(String user, int course) throws URISyntaxException, JsonGenerationException, JsonMappingException, IOException {
 		// Create HTTP client
  		HttpClient client = new DefaultHttpClient();
 		
@@ -37,13 +37,11 @@ public class AcceptUser4Course {
 		// Construct request
 		HttpPut request = new HttpPut(uri);
 		
-		if(user != null && course != null){
+		if(user != null && course < 0){
 			// Create JSON object from Item
 			GetUser get = new GetUser();
-			GetCourseByName x = new GetCourseByName();
 			
-			
-			Registration reg = new Registration(get.getUser(user).getId(), x.getCourse(course).getId());
+			Registration reg = new Registration(get.getUser(user).getId(), course);
 			reg.setStatus(RegistrationStatus.APPROVED);
 			
 		

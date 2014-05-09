@@ -6,8 +6,8 @@ import edu.ycp.cs.cs496.TGOH.temp.Courses;
 import edu.ycp.cs.cs496.TGOH.temp.Registration;
 
 public class AddingCoursesToUser {
-	public Registration addingRegistrationToUser(Registration reg){
+	public void addingRegistrationToUser(Registration reg){
 		IDatabase db = Database.getInstance();
-		return db.registerUserForCourse(reg);
+		db.registerUserForCourse(reg);
 	}
 }

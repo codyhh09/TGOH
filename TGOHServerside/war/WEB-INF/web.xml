@@ -33,6 +33,11 @@
 		<servlet-name>UserToRegistration</servlet-name>
 		<servlet-class>edu.ycp.cs.cs496.TGOH.servlet.UserToRegistration</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>findthereg</servlet-name>
+		<servlet-class>edu.ycp.cs.cs496.TGOH.servlet.findthereg</servlet-class>
+	</servlet>
+
 	
 	<!-- Servlet mappings (mapping of paths to servlets). -->
 	<servlet-mapping>
@@ -62,5 +67,9 @@
 	<servlet-mapping>	
 		<servlet-name>UserToRegistration</servlet-name>
 		<url-pattern>/usertoreg/*</url-pattern>
+	</servlet-mapping>
+		<servlet-mapping>	
+		<servlet-name>findthereg</servlet-name>
+		<url-pattern>/reg/*</url-pattern>
 	</servlet-mapping>
 </web-app>

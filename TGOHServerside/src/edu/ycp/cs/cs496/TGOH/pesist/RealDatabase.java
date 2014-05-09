@@ -61,7 +61,7 @@ public class RealDatabase implements IDatabase{
 					}
 					
 					user.setId(generatedKeys.getInt(1));
-					System.out.println("New item has id " + user.getId());
+					System.out.println("New User has id " + user.getId());
 					
 					return true;
 				} finally {
@@ -266,7 +266,7 @@ public class RealDatabase implements IDatabase{
 				
 				try {
 					stmt = conn.prepareStatement(
-							"insert into courses (coursename) values (?)",
+							"insert into courses (coursename, teachername) values (?, ?)",
 							PreparedStatement.RETURN_GENERATED_KEYS
 					);
 					
@@ -283,9 +283,6 @@ public class RealDatabase implements IDatabase{
 					
 					course.setId(generatedKeys.getInt(1));
 					System.out.println("New Course has id " + course.getId());
-					Registration reg = registerUserForCourse(new Registration(getUser(course.getTeacher()).getId(), course.getId()));
-					reg.setStatus(RegistrationStatus.TEACHER);
-					AcceptingUserforCourse(getUser(course.getTeacher()), course);
 					return true;
 				} finally {
 					DBUtil.closeQuietly(generatedKeys);
@@ -333,10 +330,10 @@ public class RealDatabase implements IDatabase{
 	 * Done
 	 */
 	@Override
-	public Registration registerUserForCourse(final Registration reg) {
-		return executeTransaction(new Transaction<Registration>() {
+	public void registerUserForCourse(final Registration reg) {
+		executeTransaction(new Transaction<Boolean>() {
 			@Override
-			public Registration execute(Connection conn) throws SQLException {
+			public Boolean execute(Connection conn) throws SQLException {
 				PreparedStatement stmt = null;
 				ResultSet generatedKeys = null;
 				
@@ -345,6 +342,7 @@ public class RealDatabase implements IDatabase{
 							"insert into registrations (userid, courseid, type) values (?, ?, ?)",
 							PreparedStatement.RETURN_GENERATED_KEYS
 					);
+					
 					storeRegistrationNoId(reg, stmt, 1);
 
 					// Attempt to insert the item
@@ -357,9 +355,9 @@ public class RealDatabase implements IDatabase{
 					}
 					
 					reg.setId(generatedKeys.getInt(1));
-					System.out.println("New item has id " + reg.getId());
+					System.out.println("New Registration has id " + reg.getId());
 					
-					return reg;
+					return true;
 				} finally {
 					DBUtil.closeQuietly(generatedKeys);
 					DBUtil.closeQuietly(stmt);
@@ -372,7 +370,7 @@ public class RealDatabase implements IDatabase{
 	 * Done
 	 */
 	@Override
-	public void RemovingUserFromCourse(final User user, final Courses course) {
+	public void RemovingUserFromCourse(final int user, final int course) {
 		executeTransaction(new Transaction<Boolean>() {
 			@Override
 			public Boolean execute(Connection conn) throws SQLException {
@@ -380,11 +378,11 @@ public class RealDatabase implements IDatabase{
 				
 				try {
 					stmt = conn.prepareStatement("Delete from registrations where registrations.userid = ? and registrations.courseid = ?");
-					stmt.setInt(1, user.getId());
-					stmt.setInt(2, course.getId());
+					stmt.setInt(1, user);
+					stmt.setInt(2, course);
 					
 					int numRowsAffected = stmt.executeUpdate();
-					
+
 					return numRowsAffected != 0;
 				} finally {
 					DBUtil.closeQuietly(stmt);
@@ -418,6 +416,35 @@ public class RealDatabase implements IDatabase{
 					User user = new User();
 					loadUser(user, resultSet, 1);
 					return user;
+				} finally {
+					DBUtil.closeQuietly(resultSet);
+					DBUtil.closeQuietly(stmt);
+				}
+			}
+		});
+	}
+	
+	public Registration findreg(final int id) {
+		return executeTransaction(new Transaction<Registration>() {
+			@Override
+			public Registration execute(Connection conn) throws SQLException {
+				PreparedStatement stmt = null;
+				ResultSet resultSet = null;
+				
+				try {
+					stmt = conn.prepareStatement("select registrations.* from registrations where registrations.id = ?");
+					stmt.setInt(1, id);
+					
+					resultSet = stmt.executeQuery();
+					
+					if (!resultSet.next()) {
+						// No such item
+						return null;
+					}
+					
+					Registration reg = new Registration();
+					loadRegistration(reg, resultSet, 1);
+					return reg;
 				} finally {
 					DBUtil.closeQuietly(resultSet);
 					DBUtil.closeQuietly(stmt);
@@ -472,7 +499,7 @@ public class RealDatabase implements IDatabase{
 				ResultSet keys = null;
 
 				try {					
-					stmt = conn.prepareStatement("update registrations set registrations.type = ? where registrations.userid = ? and registrations.courseid = ?"  // FIXME:+  security issue    // only update score if new score is higher
+					stmt = conn.prepareStatement("update registrations set registrations.type = ? where registrations.userid = ? and registrations.courseid = ?"
 							);
 					stmt.setInt(1, RegistrationStatus.APPROVED.ordinal());
 					stmt.setInt(2, user.getId());
@@ -503,8 +530,9 @@ public class RealDatabase implements IDatabase{
 				
 				try {
 					// Note: no 'where' clause, so all items will be returned
-					stmt = conn.prepareStatement("select registrations.* from registrations where registrations.courseid = ?");
+					stmt = conn.prepareStatement("select registrations.* from registrations where registrations.courseid = ? and registrations.type = ?");
 					stmt.setInt(1, course);
+					stmt.setInt(2, RegistrationStatus.PENDING.ordinal());
 					resultSet = stmt.executeQuery();
 
 					List<User> result = new ArrayList<User>();
@@ -577,7 +605,7 @@ public class RealDatabase implements IDatabase{
 					}
 					
 					not.setId(generatedKeys.getInt(1));
-					System.out.println("New item has id " + not.getId());
+					System.out.println("New Notification has id " + not.getId());
 					
 					return not;
 				} finally {
@@ -913,9 +941,17 @@ public class RealDatabase implements IDatabase{
 				
 				try {
 					stmt = conn.prepareStatement("insert into registrations (userid, courseid, type) values (?,?,?)");
-					storeRegistrationNoId(new Registration(1,1), stmt, 1);
+					Registration reg3 = new Registration(4,1);
+					reg3.setStatus(RegistrationStatus.TEACHER);
+					storeRegistrationNoId(reg3, stmt, 1);
 					stmt.addBatch();
-					storeRegistrationNoId(new Registration(4,1), stmt, 1);
+					Registration reg = new Registration(2,1);
+					reg.setStatus(RegistrationStatus.PENDING);
+					storeRegistrationNoId(reg, stmt, 1);
+					stmt.addBatch();
+					Registration reg2 = new Registration(3,1);
+					reg2.setStatus(RegistrationStatus.PENDING);
+					storeRegistrationNoId(reg2, stmt, 1);
 					stmt.addBatch();
 					
 					stmt.executeBatch();

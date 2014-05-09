@@ -35,7 +35,6 @@ public class GetCoursesfromUser {
 		
 		// Execute request
 		HttpResponse response = client.execute(request);
-		System.out.println("" + response.getStatusLine().getStatusCode());
 		
 		// Parse response
 		if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {

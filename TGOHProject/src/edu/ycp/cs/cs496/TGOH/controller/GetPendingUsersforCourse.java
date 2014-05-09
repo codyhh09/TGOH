@@ -26,7 +26,7 @@ public class GetPendingUsersforCourse {
 		// Create HTTP client
  		HttpClient client = new DefaultHttpClient();
 		// Construct URI
-		URI uri = URIUtils.createURI("http", "10.0.2.2", 8081, "/userforcourse/"+ courseId , null, null);
+		URI uri = URIUtils.createURI("http", "10.0.2.2", 8081, "/usersforcourse/" + courseId , null, null);
 
 		// Construct request
 		HttpGet request = new HttpGet(uri);
@@ -34,6 +34,8 @@ public class GetPendingUsersforCourse {
 		// Execute request
 		HttpResponse response = client.execute(request);
 		// Parse response
+		System.out.print(courseId);
+		
 		if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 			// Add JSON object to request
 			HttpEntity entity = response.getEntity();

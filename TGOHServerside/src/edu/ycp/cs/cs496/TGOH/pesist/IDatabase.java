@@ -32,9 +32,9 @@ public interface IDatabase {
 	
 	public List<Courses> getAllCourse();
 
-	public void RemovingUserFromCourse(User user, Courses course);
+	public void RemovingUserFromCourse(int user, int course);
 
-	public Registration registerUserForCourse(Registration reg);
+	public void registerUserForCourse(Registration reg);
 	
 	public void AcceptingUserforCourse(User user, Courses course);
 	
@@ -51,4 +51,6 @@ public interface IDatabase {
 	public Notification getNotification(int id);
 	
 	public void changePass(final String username, final String password);
+	
+	public Registration findreg(int id);
 }

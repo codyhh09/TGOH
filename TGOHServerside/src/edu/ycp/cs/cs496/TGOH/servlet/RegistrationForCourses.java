@@ -59,13 +59,12 @@ private static final long serialVersionUID = 1L;
 
 		getUserfromRegistration con = new getUserfromRegistration();
 		User userId = con.getUserfromRegistration(Integer.parseInt(user));
-		
+		System.out.println(userId.getUserName());
 		GetCourseById cont = new GetCourseById();
 		Courses course = cont.getCourse(courseId);
-		
+		System.out.println(course.getCourse());
 		findUserForCourse controller = new findUserForCourse();
 		Registration reg = controller.findUserforCourse(userId, course);
-		
 		if (reg == null) {
 			// No such item, so return a NOT FOUND response
 			resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -107,30 +106,23 @@ private static final long serialVersionUID = 1L;
 		if (pathInfo.startsWith("/")){
 			pathInfo = pathInfo.substring(1);
 		}
-		String user = pathInfo.substring(0, pathInfo.indexOf('/'));
+		int user = Integer.parseInt(pathInfo.substring(0, pathInfo.indexOf('/')));
 		
 		if (pathInfo.contains("/")){
 			pathInfo = pathInfo.substring(pathInfo.indexOf('/')+1, pathInfo.length());
 		}
 		int courseId = Integer.parseInt(pathInfo);
 		// Use a GetItemByName controller to find the item in the database
-		GetUserController con = new GetUserController();
-		User user1 = con.getUser(user);
-
-		GetCourseById cont = new GetCourseById();
-		Courses course = cont.getCourse(courseId);
 		
 		RemovingAUserFromCourse controller = new RemovingAUserFromCourse();
-		controller.RemovingUserFromCourse(user1, course);
-		
-		findUserForCourse get = new findUserForCourse();
-		
+		controller.RemovingUserFromCourse(user, courseId);
+
 		// Set status code and content type
 		resp.setStatus(HttpServletResponse.SC_OK);
 		resp.setContentType("application/json");
 		
 		// Return the item in JSON format
-		JSON.getObjectMapper().writeValue(resp.getWriter(), get.findUserforCourse(user1, course));
+		JSON.getObjectMapper().writeValue(resp.getWriter(), user);
 	}
 	
 	@Override

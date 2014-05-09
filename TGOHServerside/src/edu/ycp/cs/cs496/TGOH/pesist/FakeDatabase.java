@@ -145,15 +145,14 @@ public class FakeDatabase implements IDatabase {
 		}
 	}
 
-	public Registration registerUserForCourse(Registration reg) {
+	public void registerUserForCourse(Registration reg) {
 		reg.setId(registrationCounter++);
 		reg.setStatus(RegistrationStatus.PENDING);
 		registrations.add(reg);
-		return reg;
 	}
 
-	public void RemovingUserFromCourse(User user, Courses course){
-		Registration reg = findUserForCourse(user, course);
+	public void RemovingUserFromCourse(int user, int course){
+		Registration reg = null;//findUserForCourse(user, course);
 		registrations.remove(reg.getId());
 	}
 
@@ -239,5 +238,10 @@ public class FakeDatabase implements IDatabase {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public Registration findreg(int id) {
+		return registrations.get(id);
 	}
 }
