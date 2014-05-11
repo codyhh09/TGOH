@@ -15,16 +15,16 @@
         android:orientation="horizontal" >
 
         <RadioButton
-            android:id="@+id/teacherradio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/teacherlbl" />
-
-        <RadioButton
             android:id="@+id/studentradio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/studentlbl" />
+
+        <RadioButton
+            android:id="@+id/teacherradio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/teacherlbl" />
     </RadioGroup>
 
     <TextView
@@ -33,7 +33,6 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/FirstName"
         android:layout_below="@+id/FirstNameSignup"
-        android:background="@drawable/textcovers"
         android:maxLength="30"
         android:text="@string/Last_Name"
         android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -47,8 +46,6 @@
         android:ems="10"
         android:inputType="text|textPersonName"
         android:maxLength="30" >
-
-        <requestFocus />
     </EditText>
 
     <TextView
@@ -57,7 +54,6 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/LastNameSignup"
         android:layout_below="@+id/LastNameSignup"
-        android:background="@drawable/textcovers"
         android:text="@string/Username"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -77,7 +73,6 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/FirstNameSignup"
         android:layout_below="@+id/UserNameSignup"
-        android:background="@drawable/textcovers"
         android:text="@string/Password"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -97,7 +92,6 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/PassSignUp"
         android:layout_below="@+id/PassSignUp"
-        android:background="@drawable/textcovers"
         android:text="@string/password2"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -117,7 +111,6 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/editText1"
         android:layout_below="@+id/editText1"
-        android:background="@drawable/textcovers"
         android:text="@string/usertype"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -129,7 +122,12 @@
         android:layout_below="@+id/FirstName"
         android:ems="10"
         android:inputType="text|textPersonName"
-        android:maxLength="30" />
+        android:maxLength="30" >
+
+        <requestFocus />
+        <requestFocus />
+
+    </EditText>
 
     <TextView
         android:id="@+id/FirstName"
@@ -139,7 +137,6 @@
         android:layout_alignParentTop="true"
         android:layout_marginLeft="22dp"
         android:layout_marginTop="14dp"
-        android:background="@drawable/textcovers"
         android:maxLength="30"
         android:text="@string/First_Name"
         android:textAppearance="?android:attr/textAppearanceMedium" />

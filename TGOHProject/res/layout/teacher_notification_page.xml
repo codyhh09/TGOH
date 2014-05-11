@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent" 
+    android:background="@drawable/teacherbackground">
 
     <Button
         android:id="@+id/btnlogout"
@@ -36,6 +37,7 @@
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/btnaccept"
         android:text="@string/teachernotaccept"
+        android:textColor="#000000"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <Button
@@ -55,6 +57,7 @@
         android:layout_alignBottom="@+id/btndeny"
         android:layout_toRightOf="@+id/btndeny"
         android:text="@string/teachernotdeny"
+        android:textColor="#000000"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <TextView
@@ -64,6 +67,7 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/btndeny"
         android:text="@string/teachernotopen"
+        android:textColor="#000000"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <ScrollView

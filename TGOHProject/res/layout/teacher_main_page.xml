@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical" 
+    android:background="@drawable/teacherbackground">
 
     <TextView
         android:id="@+id/textView1"
@@ -51,7 +52,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/btnNotify"
-        android:text="@string/enterstring" />
+        android:text="@string/enterstring"
+        android:textColor="#000000" />
 
     <EditText
         android:id="@+id/editText1"
@@ -72,6 +74,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/button1"
+        android:textColor="#000000"
         android:text="@string/removeannouncelbl" />
 
     <ListView

@@ -17,7 +17,6 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:text="@string/Username"
-        android:background="@drawable/textcovers"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <EditText
@@ -37,7 +36,6 @@
         android:layout_alignLeft="@+id/txtUserName"
         android:layout_below="@+id/txtUserName"
         android:text="@string/Password"
-        android:background="@drawable/textcovers"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <EditText
