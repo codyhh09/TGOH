@@ -7,7 +7,6 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" 
-    android:saveEnabled="false"
     android:background="@drawable/background">
 
     <TextView
@@ -28,7 +27,7 @@
         android:ems="10"
         android:inputType="textPersonName"
         android:maxLength="30" />
-    	<requestFocus />
+    <requestFocus />
     <TextView
         android:id="@+id/lblPassword"
         android:layout_width="wrap_content"
@@ -47,9 +46,7 @@
         android:layout_below="@+id/lblPassword"
         android:ems="10"
         android:inputType="textPassword"
-        android:maxLength="30" >
-
-    </EditText>
+        android:maxLength="30" />
 
     <Button
         android:id="@+id/btnSignIn"
@@ -70,5 +67,4 @@
         android:layout_alignParentRight="true"
         android:background="@drawable/buttons"
         android:text="@string/Sign_Up" />
-
 </RelativeLayout>

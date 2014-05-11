@@ -113,8 +113,9 @@ public class MainActivity extends Activity {
 							Toast.makeText(MainActivity.this, "Invalid Username/Password", Toast.LENGTH_SHORT).show();
 						}
 					} catch (Exception e) {
-						e.printStackTrace();
-						Toast.makeText(MainActivity.this, "Username does not exsist" , Toast.LENGTH_SHORT).show();
+					
+						
+						Toast.makeText(MainActivity.this, "Username does not exsist"+ e.getMessage(), Toast.LENGTH_SHORT).show();
 					}
 			}
 		});
@@ -943,7 +944,7 @@ public class MainActivity extends Activity {
 		}
 	}
 
-	/**(implement database)notifications
+	/**Finished notifications
 	 * the master's notification/homepage
 	 */
 	public void setMaster_Notification_Page(){
