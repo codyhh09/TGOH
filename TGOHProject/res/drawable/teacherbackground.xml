@@ -3,12 +3,6 @@
   android:shape="rectangle">
   
   <!-- Specify a semi-transparent solid green background color -->
-  <solid android:color="#0096fd" />
+  <solid android:color="#FF0027" />
  
 </shape> 
-
-
-
-
-
-
