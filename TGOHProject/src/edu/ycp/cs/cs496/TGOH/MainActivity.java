@@ -3,6 +3,9 @@ package edu.ycp.cs.cs496.TGOH;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -66,8 +69,9 @@ public class MainActivity extends Activity {
      */
 	public void setDefaultView(){
 		Currentuser = null;
-		setContentView(R.layout.activity_main);
 		
+		setContentView(R.layout.activity_main);
+		getResources().getColor(R.color.red);
 		Button Signin = (Button) findViewById(R.id.btnSignIn);
 		Button Signup = (Button) findViewById(R.id.btnSignUp);
 		
@@ -218,7 +222,6 @@ public class MainActivity extends Activity {
 			final Courses[] courses2 = courses;
 			ArrayAdapter<String> la = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, classes);
 			lview.setAdapter(la);      
-			
 			lview.setOnItemClickListener(new OnItemClickListener() {
 				@Override
 				public void onItemClick(AdapterView<?> arg0, View view, int arg2, long arg3) {
@@ -683,7 +686,6 @@ public class MainActivity extends Activity {
 				user = con.getUser(course.getId());	
 				for(int i = 0; i < user.length; i++){
 					list.add(user[i].getUserName());
-					
 				}
 			} catch (Exception e1) {
 				e1.printStackTrace();
@@ -702,6 +704,7 @@ public class MainActivity extends Activity {
 				check.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 				check.setText(students);
 				checks.add(check);
+				check.setButtonDrawable(R.drawable.check);
 				
 				// Add check to layout
 				layout4Checks.addView(checks.get(counter));

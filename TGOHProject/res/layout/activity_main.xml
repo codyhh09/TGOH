@@ -6,7 +6,9 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".MainActivity" >
+    tools:context=".MainActivity" 
+    android:saveEnabled="false"
+    android:background="@drawable/background">
 
     <TextView
         android:id="@+id/lblUserName"
@@ -15,6 +17,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:text="@string/Username"
+        android:background="@drawable/textcovers"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <EditText
@@ -26,10 +29,7 @@
         android:ems="10"
         android:inputType="textPersonName"
         android:maxLength="30" />
-
     	<requestFocus />
-
-
     <TextView
         android:id="@+id/lblPassword"
         android:layout_width="wrap_content"
@@ -37,6 +37,7 @@
         android:layout_alignLeft="@+id/txtUserName"
         android:layout_below="@+id/txtUserName"
         android:text="@string/Password"
+        android:background="@drawable/textcovers"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <EditText
@@ -55,19 +56,23 @@
     <Button
         android:id="@+id/btnSignIn"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
         android:layout_alignLeft="@+id/txtPassword"
         android:layout_alignRight="@+id/lblPassword"
         android:layout_below="@+id/txtPassword"
         android:layout_marginTop="20dp"
+        android:background="@drawable/buttons"
         android:text="@string/Sign_In" />
 
     <Button
         android:id="@+id/btnSignUp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
+        android:layout_alignLeft="@+id/btnSignIn"
         android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@+id/txtPassword"
+        android:layout_alignRight="@+id/btnSignIn"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/buttons"
         android:text="@string/Sign_Up" />
 
 </RelativeLayout>

@@ -10,6 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
+        android:background="@drawable/buttons"
         android:text="@string/btnViewSchedule" />
 
     <Button
@@ -19,6 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
+        android:background="@drawable/buttons"
         android:text="@string/btnLogOut" />
 
     <Button
@@ -27,6 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
+        android:background="@drawable/buttons"
         android:text="@string/btnRequestClass" />
 
     <TextView
@@ -43,18 +46,18 @@
         android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/btnback"
-        android:layout_alignParentLeft="true"
-        android:layout_alignRight="@+id/btnback"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@+id/btnRequestClass"
+        android:layout_toRightOf="@+id/btnback"
+        android:background="@drawable/buttons"
         android:text="@string/lblSettings" />
 
     <ListView
         android:id="@+id/listView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/button2"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/textView1" >
+        android:layout_below="@+id/button1" >
 
     </ListView>
 

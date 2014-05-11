@@ -3,7 +3,8 @@
     android:id="@+id/RelativeLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical" 
+    android:background="@drawable/masterbackground">
 
     <TextView
         android:id="@+id/textView1"
@@ -21,6 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
+        android:background="@drawable/buttons"
         android:text="@string/btnLogOut" />
 
     <ScrollView
@@ -41,19 +43,21 @@
 
     <Button
         android:id="@+id/backbtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="60dp"
+        android:layout_height="40dp"
         android:layout_alignParentLeft="true"
+        android:background="@drawable/buttons"
         android:layout_below="@+id/textView1"
         android:text="@string/btnAccept" />
 
     <Button
         android:id="@+id/submitbtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/backbtn"
-        android:layout_alignBottom="@+id/backbtn"
+        android:layout_width="60dp"
+        android:layout_height="40dp"
+        android:layout_above="@+id/scrollView2"
+        android:layout_marginLeft="16dp"
         android:layout_toRightOf="@+id/backbtn"
+        android:background="@drawable/buttons"
         android:text="@string/btnDeny" />
 
 </RelativeLayout>
