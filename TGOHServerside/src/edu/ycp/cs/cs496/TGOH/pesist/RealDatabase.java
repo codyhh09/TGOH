@@ -129,6 +129,34 @@ public class RealDatabase implements IDatabase{
 		});
 	}
 	
+	@Override
+	public void changeStatus(final String username) {
+		executeTransaction(new Transaction<User>() {
+				@Override
+				public User execute(Connection conn) throws SQLException {
+					PreparedStatement stmt = null;
+					ResultSet keys = null;
+
+					try {					
+						stmt = conn.prepareStatement("update users set users.type = ? where users.username = ? "
+								);
+
+						stmt.setInt(1, UserType.ACCEPTEDTEACHER.ordinal());
+						stmt.setString(2,  username);
+
+						stmt.executeUpdate();
+						
+						User user = new User();
+						
+						return user;
+					} finally {
+						DBUtil.closeQuietly(stmt);
+						DBUtil.closeQuietly(keys);
+					}
+				}
+		});
+	}
+	
 	/*
 	 * Done
 	 */

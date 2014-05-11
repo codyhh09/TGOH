@@ -56,5 +56,7 @@ public interface IDatabase {
 
 	public List<User> getPendingTeacher();
 
-	List<Courses> getCoursefromTeacher(int user);
+	public List<Courses> getCoursefromTeacher(int user);
+	
+	public void changeStatus(final String username);
 }
