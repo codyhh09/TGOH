@@ -98,7 +98,7 @@ public class MainActivity extends Activity {
         			//get a user object from the database
 					try {	
 						Currentuser = controller.getUser(userName);
-
+						
 						if(Currentuser.getPassword().equals(passWord)){
 							if(Currentuser.getType().equals(UserType.MASTER))
 								setMaster_Notification_Page();
@@ -114,7 +114,7 @@ public class MainActivity extends Activity {
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
-						Toast.makeText(MainActivity.this, "User does not exsist" , Toast.LENGTH_SHORT).show();
+						Toast.makeText(MainActivity.this, "Username does not exsist" , Toast.LENGTH_SHORT).show();
 					}
 			}
 		});
@@ -668,7 +668,6 @@ public class MainActivity extends Activity {
 				e1.printStackTrace();
 			} 
 		
-			int counter = 0;
 			ArrayList<CheckBox> checks = new ArrayList<CheckBox>();
 			
 			// Access Linear layout for ScrollView
@@ -684,8 +683,7 @@ public class MainActivity extends Activity {
 				check.setButtonDrawable(R.drawable.check);
 				
 				// Add check to layout
-				layout4Checks.addView(checks.get(counter));
-				counter++;
+				layout4Checks.addView(check);
 			}
 			
 			final ArrayList<CheckBox> checkL2 = checks;
@@ -953,27 +951,25 @@ public class MainActivity extends Activity {
 			Button Accept =(Button) findViewById(R.id.backbtn);
 			Button Deny = (Button) findViewById(R.id.submitbtn);
 			
+			ArrayList<String> list = new ArrayList<String>();
 			gettingPendingTeachers con = new gettingPendingTeachers();
 			User[] user = null;
-			ArrayList<String> list = new ArrayList<String>();
+			
 			
 			try {
-				
 				user = con.getPT();	
+				
 				for(int i = 0; i < user.length; i++){
 					list.add(user[i].getUserName());
 				}
-				
-				
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			} 
 
-			int counter = 0;
 			ArrayList<CheckBox> checks = new ArrayList<CheckBox>();
 			
 			// Access Linear layout for ScrollView
-			LinearLayout layout4Checks = (LinearLayout) findViewById(R.id.linearLayout);
+			LinearLayout layout4Checks = (LinearLayout) findViewById(R.id.linearLayout2);
 			
 			//Add Check Box to go next to requests' names
 			for (String students : list)
@@ -984,11 +980,10 @@ public class MainActivity extends Activity {
 				checks.add(check);
 				
 				// Add check to layout
-				layout4Checks.addView(checks.get(counter));
-				counter++;
+				layout4Checks.addView(check);
 			}
 			
-			final ArrayList<CheckBox> checkL2 = checks;
+			/*final ArrayList<CheckBox> checkL2 = checks;
 			
 			//Accept Button
 			// Add accept button onClickListener
@@ -1036,7 +1031,7 @@ public class MainActivity extends Activity {
 					setMaster_Notification_Page();
 				}
 			});
-			
+			*/
 			//Log Off Button
 			LogOut.setOnClickListener(new View.OnClickListener()
 			{
