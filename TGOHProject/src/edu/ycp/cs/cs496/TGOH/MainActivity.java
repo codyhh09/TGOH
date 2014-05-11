@@ -69,10 +69,9 @@ public class MainActivity extends Activity {
      * This will take us to the sign in page
      */
 	public void setDefaultView(){
-		Currentuser = null;
-		
 		setContentView(R.layout.activity_main);
 		getResources().getColor(R.color.red);
+		Currentuser = null;
 		Button Signin = (Button) findViewById(R.id.btnSignIn);
 		Button Signup = (Button) findViewById(R.id.btnSignUp);
 		
@@ -86,7 +85,7 @@ public class MainActivity extends Activity {
 		});
 		
 		Signin.setOnClickListener(new View.OnClickListener() {
-	
+			
 			@Override
 			public void onClick(View v) {
 				EditText Username = (EditText) findViewById(R.id.txtUserName);
@@ -311,25 +310,25 @@ public class MainActivity extends Activity {
 				//view holding the announcements
 				ListView lview = (ListView) findViewById(R.id.listView1);
 				
-				//list of announcements
 				List<String> announcements = new ArrayList<String>();
-			
+				List<String> announcements2 = new ArrayList<String>();
+				//controller for getting the Announcements
 				GetAnnouncements con = new GetAnnouncements();
-				
 				Notification[]  announce = null;
-				
 				try {
 					announce = con.getAnnouncements(course.getId());
+					//adding the announcements to the list
+					for(int j = 0; j < announce.length; j++){
+						announcements.add(announce[j].getText());
+					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				} 
-				
-				//adding the announcements to the list
-				for(int i = 0; i< announce.length; i++){
-					announcements.add(announce[i].getText());
+				for(int j = announcements.size()-1; j >= 0; j--){
+					announcements2.add(announcements.get(j));
 				}
-				
-				ArrayAdapter<String> la = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, announcements);
+				//add strings to a list adapter to be displayed
+				ArrayAdapter<String> la = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, announcements2);
 				lview.setAdapter(la);
 		}
 	}
@@ -469,27 +468,30 @@ public class MainActivity extends Activity {
 	
 			ListView lview = (ListView) findViewById(R.id.listView1);
 			
-			//list of announcements
 			List<String> announcements = new ArrayList<String>();
-		
+			List<String> announcements2 = new ArrayList<String>();
+			//controller for getting the Announcements
 			GetAnnouncements con = new GetAnnouncements();
-			
 			Notification[]  announce = null;
+			
 			for(int i = 0; i <courses.length; i++){
+				//list of announcements
 				try {
 					announce = con.getAnnouncements(courses[i].getId());
+					//adding the announcements to the list
+					for(int j = 0; j < announce.length; j++){
+						announcements.add(announce[j].getText());
+					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				} 
-				
-				//adding the announcements to the list
-				for(int j = 0; j < announce.length; j++){
-					announcements.add(announce[j].getText());
+				for(int j = announcements.size()-1; j >= 0; j--){
+					announcements2.add(announcements.get(j));
 				}
 			}
-			
-			ArrayAdapter<String> la = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, announcements);
-			lview.setAdapter(la);
+				//add strings to a list adapter to be displayed
+				ArrayAdapter<String> la = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, announcements2);
+				lview.setAdapter(la);
 		}
 	}
 	
@@ -505,7 +507,6 @@ public class MainActivity extends Activity {
 		}
 		else
 		{
-
 			setContentView(R.layout.teacher_main_page);
 			
 			Button notify = (Button) findViewById(R.id.btnNotify);
@@ -519,10 +520,11 @@ public class MainActivity extends Activity {
 
 			//list of announcements
 			List<String> announcements = new ArrayList<String>();
-
+			List<String> announcements2 = new ArrayList<String>();
 			//controller for getting the Announcements
 			GetAnnouncements con = new GetAnnouncements();
 			Notification[]  announce = null;
+			
 			try {
 				announce = con.getAnnouncements(course.getId());
 				//adding the announcements to the list
@@ -530,13 +532,16 @@ public class MainActivity extends Activity {
 					announcements.add(announce[j].getText());
 				}
 
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			} 
-
+			for(int j = announcements.size()-1; j > 0; j--){
+				announcements2.add(announcements.get(j));
+			}
 			//add strings to a list adapter to be displayed
 			final Notification[] not = announce;
-			ArrayAdapter<String> la = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, announcements);
+			ArrayAdapter<String> la = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, announcements2);
 			lview.setAdapter(la);
 			
 			lview.setOnItemClickListener(new OnItemClickListener() {
@@ -545,7 +550,7 @@ public class MainActivity extends Activity {
 					//pull item from listview - delete announcement
 					RemovingAnAnnouncement removeCon = new RemovingAnAnnouncement();
 					try {
-						if(removeCon.deleteAnnouncment(not[arg2].getId())){
+						if(removeCon.deleteAnnouncment(not[not.length-1 - arg2].getId())){
 							setTeacher_Main_Page(course);
 						}
 					} catch (Exception e) {
@@ -944,8 +949,7 @@ public class MainActivity extends Activity {
 		if(Currentuser == null){
 			Toast.makeText(MainActivity.this, "No one is logged in!" , Toast.LENGTH_SHORT).show();
 			setDefaultView();
-		}
-		else{
+		}else{
 			setContentView(R.layout.master_notifications_page);
 			Button LogOut = (Button) findViewById(R.id.button1);
 			Button Accept =(Button) findViewById(R.id.backbtn);
@@ -955,21 +959,18 @@ public class MainActivity extends Activity {
 			gettingPendingTeachers con = new gettingPendingTeachers();
 			User[] user = null;
 			
-			
 			try {
 				user = con.getPT();	
-				
 				for(int i = 0; i < user.length; i++){
 					list.add(user[i].getUserName());
 				}
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			} 
-
 			ArrayList<CheckBox> checks = new ArrayList<CheckBox>();
 			
 			// Access Linear layout for ScrollView
-			LinearLayout layout4Checks = (LinearLayout) findViewById(R.id.linearLayout2);
+			LinearLayout layout4Checks = (LinearLayout) findViewById(R.id.linearLayout);
 			
 			//Add Check Box to go next to requests' names
 			for (String students : list)

@@ -44,15 +44,20 @@
         android:background="@drawable/buttons"
         android:text="@string/btnDeny" />
 
-    <LinearLayout
-        android:id="@+id/linearLayout2"
-        android:layout_width="match_parent"
-        android:layout_height="376dp"
-        android:layout_alignParentBottom="true"
+    <ScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/backbtn"
-        android:orientation="vertical" >
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/backbtn" >
 
-    </LinearLayout>
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+        </LinearLayout>
+    </ScrollView>
 
 </RelativeLayout>
