@@ -16,8 +16,10 @@ import edu.ycp.cs.cs496.TGOH.controller.AddUserController;
 import edu.ycp.cs.cs496.TGOH.controller.DeleteUserController;
 import edu.ycp.cs.cs496.TGOH.controller.GetUserController;
 import edu.ycp.cs.cs496.TGOH.controller.PutPasswordController;
+import edu.ycp.cs.cs496.TGOH.controller.ReplaceStatus;
 import edu.ycp.cs.cs496.TGOH.controller.getPendingTeachers;
 import edu.ycp.cs.cs496.TGOH.temp.User;
+import edu.ycp.cs.cs496.TGOH.temp.UserType;
 
 public class Userpage extends HttpServlet{
 	private static final long serialVersionUID = 1L;
@@ -30,7 +32,6 @@ public class Userpage extends HttpServlet{
 			
 			resp.setStatus(HttpServletResponse.SC_OK);
 			resp.setContentType("text/plain");
-			resp.getWriter().println("Getting Pending Teachers");
 			JSON.getObjectMapper().writeValue(resp.getWriter(), user);
 			return ;
 		}
@@ -52,6 +53,7 @@ public class Userpage extends HttpServlet{
 			resp.getWriter().println("No such user: " + pathInfo);
 			return;
 		}
+		
 		// Set status code and content type
 		resp.setStatus(HttpServletResponse.SC_OK);
 		resp.setContentType("application/json");
@@ -103,6 +105,7 @@ public class Userpage extends HttpServlet{
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, JsonGenerationException, JsonMappingException {
 		String pathInfo = req.getPathInfo();
 		String pass = null;
+		String user = null;
 		if (pathInfo == null || pathInfo.equals("") || pathInfo.equals("/")) {
 			resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			resp.setContentType("application/json");
@@ -111,15 +114,29 @@ public class Userpage extends HttpServlet{
 			// Get the item name
 			if (pathInfo.startsWith("/")){
 				pathInfo = pathInfo.substring(1);
-			}
-			String user = pathInfo.substring(0, pathInfo.indexOf('/'));
+			}	
+
+			GetUserController controller = new GetUserController();
 			if (pathInfo.contains("/")){
+				user = pathInfo.substring(0, pathInfo.indexOf('/'));
 				pass = pathInfo.substring(pathInfo.indexOf('/')+1,pathInfo.length());
 			}else{
-				resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-				resp.setContentType("text/plain");
-				resp.getWriter().println("No password");
-				return;
+				if(controller.getUser(pathInfo).getType().equals(UserType.PENDINGTEACHER)){
+					ReplaceStatus cont = new ReplaceStatus();
+					cont.changeStat(pathInfo);
+					// Set status code and content type
+					resp.setStatus(HttpServletResponse.SC_OK);
+					resp.setContentType("application/json");
+					
+					// writing the operation out.
+					JSON.getObjectMapper().writeValue(resp.getWriter(), pathInfo);
+					return;
+				}else{
+					resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+					resp.setContentType("text/plain");
+					resp.getWriter().println("No password");
+					return;
+				}
 			}
 			// Use a GetItemByName controller to find the item in the database
 			PutPasswordController con = new PutPasswordController();
@@ -134,11 +151,5 @@ public class Userpage extends HttpServlet{
 		}
 	}
 }
-
-
-
-
-
-
 
 

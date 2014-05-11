@@ -262,4 +262,10 @@ public class FakeDatabase implements IDatabase {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public void changeStatus(String username) {
+		// TODO Auto-generated method stub
+		
+	}
 }

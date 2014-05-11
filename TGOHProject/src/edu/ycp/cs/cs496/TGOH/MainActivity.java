@@ -38,6 +38,7 @@ import edu.ycp.cs.cs496.TGOH.controller.PutPassword;
 import edu.ycp.cs.cs496.TGOH.controller.RegisterForCourse;
 import edu.ycp.cs.cs496.TGOH.controller.RemovingAUserFromCourse;
 import edu.ycp.cs.cs496.TGOH.controller.RemovingAnAnnouncement;
+import edu.ycp.cs.cs496.TGOH.controller.ReplaceStatus;
 import edu.ycp.cs.cs496.TGOH.controller.adduser;
 import edu.ycp.cs.cs496.TGOH.controller.getRegforCourse;
 import edu.ycp.cs.cs496.TGOH.controller.gettingPendingTeachers;
@@ -955,7 +956,8 @@ public class MainActivity extends Activity {
 			Button Accept =(Button) findViewById(R.id.backbtn);
 			Button Deny = (Button) findViewById(R.id.submitbtn);
 			
-			ArrayList<String> list = new ArrayList<String>();
+
+			List<String> list = new ArrayList<String>();
 			gettingPendingTeachers con = new gettingPendingTeachers();
 			User[] user = null;
 			
@@ -966,26 +968,28 @@ public class MainActivity extends Activity {
 				}
 			} catch (Exception e1) {
 				e1.printStackTrace();
-			} 
+			} 	
+			
 			ArrayList<CheckBox> checks = new ArrayList<CheckBox>();
 			
 			// Access Linear layout for ScrollView
-			LinearLayout layout4Checks = (LinearLayout) findViewById(R.id.linearLayout);
-			
+			LinearLayout layout4Checks = (LinearLayout) findViewById(R.id.linearLayout2);
+
 			//Add Check Box to go next to requests' names
-			for (String students : list)
-			{
+			for (String students : list){
 				CheckBox check = new CheckBox(this);
 				check.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 				check.setText(students);
 				checks.add(check);
+				check.setButtonDrawable(R.drawable.check);
 				
 				// Add check to layout
 				layout4Checks.addView(check);
 			}
 			
-			/*final ArrayList<CheckBox> checkL2 = checks;
 			
+			final ArrayList<CheckBox> checkL2 = checks;
+					
 			//Accept Button
 			// Add accept button onClickListener
 			Accept.setOnClickListener(new View.OnClickListener(){
@@ -995,9 +999,12 @@ public class MainActivity extends Activity {
 					{
 						if(students.isChecked())
 						{
-
+							
 							try {
-								
+								ReplaceStatus con = new ReplaceStatus();
+								GetUser cont = new GetUser();
+								con.putReplace(cont.getUser(students.getText().toString()));
+								Toast.makeText(MainActivity.this, "You just added "+ students.getText().toString() +" as a teacher", Toast.LENGTH_SHORT).show();
 							} catch (Exception e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -1020,9 +1027,10 @@ public class MainActivity extends Activity {
 					{
 						if(students.isChecked())
 						{
-
+							DeleteUser duser = new DeleteUser();
 							try {
-								
+								duser.deleteUser(students.getText().toString());
+								Toast.makeText(MainActivity.this, "You just deleted "+ students.getText().toString() , Toast.LENGTH_SHORT).show();
 							} catch (Exception e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -1032,7 +1040,7 @@ public class MainActivity extends Activity {
 					setMaster_Notification_Page();
 				}
 			});
-			*/
+			
 			//Log Off Button
 			LogOut.setOnClickListener(new View.OnClickListener()
 			{

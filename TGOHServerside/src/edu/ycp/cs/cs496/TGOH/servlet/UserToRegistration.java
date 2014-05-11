@@ -7,7 +7,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
 import edu.ycp.cs.cs496.TGOH.JSON.JSON;
+import edu.ycp.cs.cs496.TGOH.controller.PutPasswordController;
+import edu.ycp.cs.cs496.TGOH.controller.ReplaceStatus;
 import edu.ycp.cs.cs496.TGOH.controller.getUserfromRegistration;
 import edu.ycp.cs.cs496.TGOH.temp.User;
 
