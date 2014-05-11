@@ -30,6 +30,7 @@ import edu.ycp.cs.cs496.TGOH.controller.DeleteUser;
 import edu.ycp.cs.cs496.TGOH.controller.DeletingARegistration;
 import edu.ycp.cs.cs496.TGOH.controller.GetAnnouncements;
 import edu.ycp.cs.cs496.TGOH.controller.GetCourseByName;
+import edu.ycp.cs.cs496.TGOH.controller.GetCoursesfromTeacher;
 import edu.ycp.cs.cs496.TGOH.controller.GetCoursesfromUser;
 import edu.ycp.cs.cs496.TGOH.controller.GetPendingUsersforCourse;
 import edu.ycp.cs.cs496.TGOH.controller.GetUser;
@@ -496,8 +497,7 @@ public class MainActivity extends Activity {
 	 * Teacher's homepage
 	 * @param course
 	 */
-	public void setTeacher_Main_Page(final Courses course)
-	{
+	public void setTeacher_Main_Page(final Courses course){
 		if(Currentuser == null)
 		{
 			Toast.makeText(MainActivity.this, "No one is logged in!" , Toast.LENGTH_SHORT).show();
@@ -514,6 +514,46 @@ public class MainActivity extends Activity {
 			Button delete = (Button) findViewById(R.id.button2);
 			Button add = (Button) findViewById(R.id.button1);
 			final EditText announcmentText = (EditText) findViewById(R.id.editText1);
+		
+			ListView lview = (ListView) findViewById(R.id.listView2);
+
+			//list of announcements
+			List<String> announcements = new ArrayList<String>();
+
+			//controller for getting the Announcements
+			GetAnnouncements con = new GetAnnouncements();
+			Notification[]  announce = null;
+			try {
+				announce = con.getAnnouncements(course.getId());
+				//adding the announcements to the list
+				for(int j = 0; j < announce.length; j++){
+					announcements.add(announce[j].getText());
+				}
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			} 
+
+			//add strings to a list adapter to be displayed
+			final Notification[] not = announce;
+			ArrayAdapter<String> la = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, announcements);
+			lview.setAdapter(la);
+			
+			lview.setOnItemClickListener(new OnItemClickListener() {
+				@Override
+				public void onItemClick(AdapterView<?> arg0, View view, int arg2, long arg3){
+					//pull item from listview - delete announcement
+					RemovingAnAnnouncement removeCon = new RemovingAnAnnouncement();
+					try {
+						if(removeCon.deleteAnnouncment(not[arg2].getId())){
+							setTeacher_Main_Page(course);
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+						Toast.makeText(MainActivity.this, "No announcements to show." , Toast.LENGTH_SHORT).show();
+					}	
+				}
+			});
 			
 			// Add onClickListener
 			notify.setOnClickListener(new View.OnClickListener()
@@ -579,10 +619,9 @@ public class MainActivity extends Activity {
 					try {
 						if(controller.postAnnouncement(newNot)){
 							Toast.makeText(MainActivity.this, "Announcement Added" , Toast.LENGTH_SHORT).show();
-							setTeacher_Main_Page(course);
-						}else{
-							Toast.makeText(MainActivity.this, "Internal Error. Try again later" , Toast.LENGTH_SHORT).show();
-						}
+						}	
+						setTeacher_Main_Page(course);
+						
 					} catch (Exception e) {
 						e.printStackTrace();
 						Toast.makeText(MainActivity.this, "Internal Error." , Toast.LENGTH_SHORT).show();
@@ -590,67 +629,6 @@ public class MainActivity extends Activity {
 					
 				}
 			});
-			
-			ListView lview = (ListView) findViewById(R.id.listView1);
-			
-			//list of announcements
-			List<String> announcements = new ArrayList<String>();
-			
-			//controller for getting the Announcements
-			GetAnnouncements con = new GetAnnouncements();
-			
-			Notification[]  announce = null;
-				try {
-					announce = con.getAnnouncements(course.getId());
-				} catch (Exception e) {
-					e.printStackTrace();
-				} 
-				
-				//adding the announcements to the list
-				for(int j = 0; j < announce.length; j++){
-					announcements.add(announce[j].getText());
-				}
-				if(!announcements.isEmpty()){
-				//add strings to a list adapter to be displayed
-				announcements.add(announcmentText.getText().toString());
-				ArrayAdapter<String> la = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, announcements);
-				lview.setAdapter(la);
-				final Notification[] announce2 = announce;
-				
-				System.out.println("" + announcements.get(0));
-				if(announcements.isEmpty()){
-					Toast.makeText(MainActivity.this, "Internal Error, Try Again" , Toast.LENGTH_SHORT).show();
-				}else
-				{
-					lview.getEmptyView();
-					lview.setOnItemClickListener(new OnItemClickListener() 
-					{
-						@Override
-						public void onItemClick(AdapterView<?> arg0, View view, int arg2, long arg3)
-						{
-							//pull item from listview - delete announcement
-							
-							RemovingAnAnnouncement removeCon = new RemovingAnAnnouncement();
-							Notification note = new Notification();
-							if(arg2 >= 0){
-								note = announce2[arg2]; 
-							}
-							try {
-								if(removeCon.deleteAnnouncment(note.getId())){
-									setTeacher_Main_Page(course);
-								}else{
-									Toast.makeText(MainActivity.this, "Internal Error, Try Again" , Toast.LENGTH_SHORT).show();
-								}
-							} catch (Exception e) {
-								e.printStackTrace();
-								Toast.makeText(MainActivity.this, "No announcements to show." , Toast.LENGTH_SHORT).show();
-							}						
-						}
-					});
-					
-					announce = announce2;
-				}
-				}
 		}
 	}
 	
@@ -682,7 +660,6 @@ public class MainActivity extends Activity {
 			User[] user = null;
 			
 			try {
-				
 				user = con.getUser(course.getId());	
 				for(int i = 0; i < user.length; i++){
 					list.add(user[i].getUserName());
@@ -813,7 +790,7 @@ public class MainActivity extends Activity {
 			ListView lview = (ListView) findViewById(R.id.listView1);
 			
 			//pull the list of user courses from the database
-			GetCoursesfromUser con = new GetCoursesfromUser(); 
+			GetCoursesfromTeacher con = new GetCoursesfromTeacher(); 
 			List<String> classes = new ArrayList<String>();
 			Courses[] courses = null;
 

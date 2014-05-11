@@ -28,7 +28,7 @@ public class AddAnnouncement {
 	HttpClient client = new DefaultHttpClient();
 	
 	// Construct URI
-	URI uri = URIUtils.createURI("http", "10.0.2.2", 8081, "/notification/" + "addnewannounce" , null, null);
+	URI uri = URIUtils.createURI("http", "10.0.2.2", 8081, "/notification/", null, null);
 	
 	// Construct request
 	HttpPost request = new HttpPost(uri);

@@ -73,7 +73,7 @@ private static final long serialVersionUID = 1L;
 		Notification not = JSON.getObjectMapper().readValue(req.getReader(), Notification.class);
 		// Use a GetUser controller to find the item in the database
 		addingANotification con = new addingANotification();
-		con.AddingANotification(not.getText(), not.getCourseId());
+		con.AddingANotification(not);
 		// Set status code and content type
 		resp.setStatus(HttpServletResponse.SC_OK);
 		resp.setContentType("application/json");

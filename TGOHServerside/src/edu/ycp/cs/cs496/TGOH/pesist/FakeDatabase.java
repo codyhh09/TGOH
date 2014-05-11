@@ -250,4 +250,16 @@ public class FakeDatabase implements IDatabase {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public List<Courses> getCoursefromTeacher(int user) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Notification addNotification(Notification not) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

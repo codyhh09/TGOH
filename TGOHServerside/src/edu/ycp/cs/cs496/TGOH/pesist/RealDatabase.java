@@ -200,8 +200,43 @@ public class RealDatabase implements IDatabase{
 				
 				try {
 					// Note: no 'where' clause, so all items will be returned
-					stmt = conn.prepareStatement("select registrations.* from registrations where registrations.userid = ?");
+					stmt = conn.prepareStatement("select registrations.* from registrations where registrations.userid = ? and registrations.type = ?");
 					stmt.setInt(1, user);
+					stmt.setInt(2, RegistrationStatus.APPROVED.ordinal());
+					resultSet = stmt.executeQuery();
+
+					List<Courses> result = new ArrayList<Courses>();
+					while (resultSet.next()) {
+						Courses course = new Courses();
+						course = getCourse(resultSet.getInt(3));
+						result.add(course);
+					}
+					
+					return result;
+				} finally {
+					DBUtil.closeQuietly(resultSet);
+					DBUtil.closeQuietly(stmt);
+				}
+			}
+		});
+	}
+	
+	/*
+	 * Done
+	 */
+	@Override
+	public List<Courses> getCoursefromTeacher(final int user) {
+		return executeTransaction(new Transaction<List<Courses>>() {
+			@Override
+			public List<Courses> execute(Connection conn) throws SQLException {
+				PreparedStatement stmt = null;
+				ResultSet resultSet = null;
+				
+				try {
+					// Note: no 'where' clause, so all items will be returned
+					stmt = conn.prepareStatement("select registrations.* from registrations where registrations.userid = ? and registrations.type = ?");
+					stmt.setInt(1, user);
+					stmt.setInt(2, RegistrationStatus.TEACHER.ordinal());
 					resultSet = stmt.executeQuery();
 
 					List<Courses> result = new ArrayList<Courses>();
@@ -620,19 +655,18 @@ public class RealDatabase implements IDatabase{
 	 * Done
 	 */
 	@Override
-	public Notification addNotification(final int courseId, final String text) {
+	public Notification addNotification(final Notification not) {
 		return executeTransaction(new Transaction<Notification>() {
 			@Override
 			public Notification execute(Connection conn) throws SQLException {
 				PreparedStatement stmt = null;
 				ResultSet generatedKeys = null;
-				
+
 				try {
 					stmt = conn.prepareStatement(
 							"insert into notifications (courseid, text) values (?, ?)",
 							PreparedStatement.RETURN_GENERATED_KEYS
 					);
-					Notification not = new Notification();
 					storeNotNoId(not, stmt, 1);
 
 					// Attempt to insert the item
@@ -643,10 +677,10 @@ public class RealDatabase implements IDatabase{
 					if (!generatedKeys.next()) {
 						throw new SQLException("Could not get auto-generated key for inserted Item");
 					}
-					
+
 					not.setId(generatedKeys.getInt(1));
-					System.out.println("New Notification has id " + not.getId());
-					
+					System.out.println("New item has id " + not.getId());
+
 					return not;
 				} finally {
 					DBUtil.closeQuietly(generatedKeys);
@@ -655,7 +689,6 @@ public class RealDatabase implements IDatabase{
 			}
 		});
 	}
-
 	/*
 	 * Done
 	 */
@@ -1008,7 +1041,7 @@ public class RealDatabase implements IDatabase{
 				
 				try {
 					stmt = conn.prepareStatement("insert into notifications (courseid, text) values (?,?)");
-					storeNotNoId(new Notification(), stmt, 1);
+					storeNotNoId(new Notification(1, "hi"), stmt, 1);
 					stmt.addBatch();
 					
 					stmt.executeBatch();

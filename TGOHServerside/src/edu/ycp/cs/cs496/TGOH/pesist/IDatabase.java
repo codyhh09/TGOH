@@ -44,7 +44,7 @@ public interface IDatabase {
 
 	public void removeNotification(int id);
 	
-	public Notification addNotification(int courseId, String text);
+	public Notification addNotification(Notification not);
 	
 	public List<Notification> getNotificationForCourse(int courseId);
 	
@@ -55,4 +55,6 @@ public interface IDatabase {
 	public Registration findreg(int id);
 
 	public List<User> getPendingTeacher();
+
+	List<Courses> getCoursefromTeacher(int user);
 }
