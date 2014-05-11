@@ -7,27 +7,31 @@
     <Button
         android:id="@+id/btnlogout"
         style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="75dp"
+        android:layout_height="25dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
+        android:background="@drawable/buttons"
         android:text="@string/btnLogOut" />
     
     <Button
         android:id="@+id/btnaccept"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="70dp"
+        android:layout_height="40dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:background="@drawable/buttons"
         android:text="@string/btnAccept" />
 
     <Button
         android:id="@+id/btnback"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/textView2"
         android:layout_alignLeft="@+id/btnlogout"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/btnlogout"
+        android:layout_alignTop="@+id/btndeny"
+        android:background="@drawable/buttons"
         android:text="@string/back" />
 
     <TextView
@@ -43,10 +47,11 @@
     <Button
         android:id="@+id/btndeny"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/btnaccept"
         android:layout_toLeftOf="@+id/textView1"
+        android:background="@drawable/buttons"
         android:text="@string/btnDeny" />
 
     <TextView

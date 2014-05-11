@@ -16,19 +16,21 @@
     <Button
         android:id="@+id/button2"
         style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="75dp"
+        android:layout_height="25dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
+        android:background="@drawable/buttons"
         android:text="@string/btnLogOut" />
 
     <Button
         android:id="@+id/button4"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_alignLeft="@+id/button2"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
+        android:background="@drawable/buttons"
         android:text="@string/back" />
 
     <TextView
@@ -73,19 +75,23 @@
 
     <Button
         android:id="@+id/button1"
-        android:layout_width="wrap_content"
+        android:layout_width="60dp"
         android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/editText2"
+        android:layout_alignLeft="@+id/button2"
         android:layout_alignParentRight="true"
         android:layout_alignTop="@+id/editText2"
+        android:background="@drawable/buttons"
         android:text="@string/submit_string" />
 
     <Button
         android:id="@+id/button3"
-        android:layout_width="wrap_content"
+        android:layout_width="110dp"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        
+        android:layout_alignTop="@+id/button4"
+        android:background="@drawable/buttons"
         android:text="@string/btnDeleteUser" />
 
 </RelativeLayout>

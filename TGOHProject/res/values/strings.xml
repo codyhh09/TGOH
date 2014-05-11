@@ -39,7 +39,7 @@
     <string name="teachernotdeny">"Deny checked student(s) "</string>
     <string name="teachernotopen">"Students awaiting approval to class"</string>
     <string name="show">Show Classes</string>
-    <string name="Announcementslbl2">Important Announcements</string>
+    <string name="Announcementslbl2">Important Announcements:</string>
     <string name="lblSettings">Settings</string>
     <string name="btnNewPass">Change Password</string>
     <string name="btnDeleteUser">Delete Account</string>

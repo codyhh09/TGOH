@@ -10,14 +10,15 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
+        android:layout_alignTop="@+id/button2"
         android:background="@drawable/buttons"
         android:text="@string/btnViewSchedule" />
 
     <Button
         android:id="@+id/button1"
         style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="75dp"
+        android:layout_height="25dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:background="@drawable/buttons"
@@ -29,6 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/button2"
         android:background="@drawable/buttons"
         android:text="@string/btnRequestClass" />
 
@@ -45,7 +47,7 @@
     <Button
         android:id="@+id/button2"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_alignParentBottom="true"
         android:layout_toLeftOf="@+id/btnRequestClass"
         android:layout_toRightOf="@+id/btnback"
@@ -56,7 +58,7 @@
         android:id="@+id/listView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/btnback"
+        android:layout_above="@+id/button2"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/button1" >
 

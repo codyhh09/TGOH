@@ -15,10 +15,11 @@
     <Button
         android:id="@+id/logoutbtn"
         style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="75dp"
+        android:layout_height="25dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
+        android:background="@drawable/buttons"
         android:text="@string/btnLogOut" />
 
     <Button
@@ -27,23 +28,27 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
+        android:layout_alignTop="@+id/backbtn"
+        android:background="@drawable/buttons"
         android:text="@string/btnDeleteCourse" />
 
     <Button
         android:id="@+id/backbtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
         android:layout_alignLeft="@+id/logoutbtn"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
+        android:background="@drawable/buttons"
         android:text="@string/back" />
 
     <Button
         android:id="@+id/btnNotify"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/logoutbtn"
+        android:background="@drawable/buttons"
         android:text="@string/btnNotifications" />
 
     <TextView
@@ -81,7 +86,7 @@
         android:id="@+id/listView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/button2"
+        android:layout_above="@+id/backbtn"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/textView3" >
 
@@ -89,12 +94,13 @@
 
     <Button
         android:id="@+id/button1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/editText1"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
         android:layout_alignBottom="@+id/editText1"
         android:layout_alignLeft="@+id/logoutbtn"
         android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/editText1"
+        android:background="@drawable/buttons"
         android:text="@string/AddAnnouncementslbl" />
 
 </RelativeLayout>
