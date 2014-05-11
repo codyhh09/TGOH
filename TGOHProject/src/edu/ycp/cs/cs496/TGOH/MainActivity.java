@@ -379,7 +379,7 @@ public class MainActivity extends Activity {
 					String Teachername = TeacherName.getText().toString();
 					
 					//pull the list of user courses from the database
-					GetCoursesfromUser con = new GetCoursesfromUser(); 
+					GetCoursesfromTeacher con = new GetCoursesfromTeacher(); 
 					GetUser user = new GetUser();
 					List<String> classes = new ArrayList<String>();
 
