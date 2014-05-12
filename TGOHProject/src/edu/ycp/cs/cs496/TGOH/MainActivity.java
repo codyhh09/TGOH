@@ -107,15 +107,15 @@ public class MainActivity extends Activity {
 							else if(Currentuser.getType().equals(UserType.STUDENT))
 								setClass_Selection_Page();														//user is student, go to student page
 							else
-								Toast.makeText(MainActivity.this, "Still waiting for the Master to Accept you as a teacher", Toast.LENGTH_SHORT).show();
+								Toast.makeText(MainActivity.this, "Still waiting for the Master to accept you as a teacher.", Toast.LENGTH_SHORT).show();
 						}else{
 							//check to make sure the userName and passWord for the user are both correct
-							Toast.makeText(MainActivity.this, "Invalid Username/Password", Toast.LENGTH_SHORT).show();
+							Toast.makeText(MainActivity.this, "Invalid Username/Password.", Toast.LENGTH_SHORT).show();
 						}
 					} catch (Exception e) {
 					
 						
-						Toast.makeText(MainActivity.this, "Username does not exsist"+ e.getMessage(), Toast.LENGTH_SHORT).show();
+						Toast.makeText(MainActivity.this, "Username does not exsist.", Toast.LENGTH_SHORT).show();
 					}
 			}
 		});
@@ -409,14 +409,14 @@ public class MainActivity extends Activity {
 									getRegforCourse getting = new getRegforCourse();
 									try {	
 										if(getting.getregforCourse(Currentuser.getId(), courses[arg2].getId()) != null){
-											msg = "Already selected this course";
+											msg = "You are already waiting on the instructer for this course.";
 										}else{
 											Registration reg = new Registration();
 											reg.setCourseId(courses[arg2].getId());
 											reg.setUserId(Currentuser.getId());
 											reg.setStatus(RegistrationStatus.PENDING);
 											con.postRegisterRequest(reg);
-											msg = "You selected " + ((TextView) view).getText();
+											msg = "You have selected " + ((TextView) view).getText() + ". Please wait for approval.";
 										}
 									} catch (Exception e) {
 										e.printStackTrace();
@@ -660,7 +660,7 @@ public class MainActivity extends Activity {
 			Button logOutButton = (Button) findViewById(R.id.btnlogout);
 			Button backButton = (Button) findViewById(R.id.btnback);
 			
-			//TODO: pull notifications from database
+			// pull notifications from database
 			
 			List<String> list = new ArrayList<String>();
 			GetPendingUsersforCourse con = new GetPendingUsersforCourse();
@@ -668,7 +668,7 @@ public class MainActivity extends Activity {
 			
 			try {
 				user = con.getUser(course.getId());	
-				for(int i = 0; i < user.length; i++){
+				for(int i = 0; i <= user.length; i++){
 					list.add(user[i].getUserName());
 				}
 			} catch (Exception e1) {
@@ -687,7 +687,7 @@ public class MainActivity extends Activity {
 				check.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 				check.setText(students);
 				checks.add(check);
-				check.setButtonDrawable(R.drawable.check);
+				//check.setButtonDrawable(R.drawable.check);
 				
 				// Add check to layout
 				layout4Checks.addView(check);
@@ -710,7 +710,7 @@ public class MainActivity extends Activity {
 							try {
 								User user = UConn.getUser(students.getText().toString());
 								au.putUser(user.getUserName(), course.getId());
-								Toast.makeText(MainActivity.this, "You just added "+ user.getUserName() +" to the course" , Toast.LENGTH_SHORT).show();
+								Toast.makeText(MainActivity.this, "You just added "+ user.getUserName() +" to the course." , Toast.LENGTH_SHORT).show();
 							} catch (Exception e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -739,7 +739,7 @@ public class MainActivity extends Activity {
 							try {
 								User user = UConn.getUser(students.getText().toString());
 								con.deleteRegistration(user.getId(), course.getId());
-								Toast.makeText(MainActivity.this, "You just deleted "+ user.getUserName() +" from the course" , Toast.LENGTH_SHORT).show();
+								Toast.makeText(MainActivity.this, "You just denied "+ user.getUserName() +" from the course." , Toast.LENGTH_SHORT).show();
 							} catch (Exception e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -904,7 +904,7 @@ public class MainActivity extends Activity {
 					GetCourseByName cont = new GetCourseByName();
 					try {
 						if(cont.getCourse(newCourse.getText().toString()) != null){
-							Toast.makeText(MainActivity.this, "This course already exists", Toast.LENGTH_SHORT).show();
+							Toast.makeText(MainActivity.this, "This course already exists.", Toast.LENGTH_SHORT).show();
 						}else{
 							AddCourse con = new AddCourse(); 
 							Courses course = new Courses();
@@ -1088,14 +1088,14 @@ public class MainActivity extends Activity {
 						PutPassword newPass = new PutPassword();
 						try {
 							newPass.putPassword(Currentuser, Password.getText().toString());
-							Toast.makeText(MainActivity.this, "You have just changed your password", Toast.LENGTH_SHORT).show();
+							Toast.makeText(MainActivity.this, "You have just changed your password.", Toast.LENGTH_SHORT).show();
 						} catch (Exception e) {
 							e.printStackTrace();
 						} 
 					}
 					else																						//Inform users that their passwords do not match each other
 					{
-						Toast.makeText(MainActivity.this, "Passwords do not match", Toast.LENGTH_SHORT).show();
+						Toast.makeText(MainActivity.this, "Passwords do not match.", Toast.LENGTH_SHORT).show();
 					}
 				}
 			});
@@ -1119,6 +1119,7 @@ public class MainActivity extends Activity {
 					// Delete the user's account FOREVER!!!
 					DeleteUser delU = new DeleteUser();
 					try {
+						Toast.makeText(MainActivity.this, "You just deleted your account. Goodbye," + Currentuser.getUserName() + ".", Toast.LENGTH_SHORT).show();
 						delU.deleteUser(Currentuser.getUserName());
 					} catch (Exception e) {
 						e.printStackTrace();
