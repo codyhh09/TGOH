@@ -530,7 +530,7 @@ public class MainActivity extends Activity {
 			try {
 				announce = con.getAnnouncements(course.getId());
 				//adding the announcements to the list
-				for(int j = 0; j < announce.length; j++){
+				for(int j = 0; j <= announce.length; j++){
 					announcements.add(announce[j].getText());
 				}
 
@@ -538,7 +538,7 @@ public class MainActivity extends Activity {
 			} catch (Exception e) {
 				e.printStackTrace();
 			} 
-			for(int j = announcements.size()-1; j > 0; j--){
+			for(int j = announcements.size()-1; j >= 0; j--){
 				announcements2.add(announcements.get(j));
 			}
 			//add strings to a list adapter to be displayed
@@ -552,8 +552,8 @@ public class MainActivity extends Activity {
 					//pull item from listview - delete announcement
 					RemovingAnAnnouncement removeCon = new RemovingAnAnnouncement();
 					try {
-						if(removeCon.deleteAnnouncment(not[not.length-1 - arg2].getId())){
-							setTeacher_Main_Page(course);
+						if(removeCon.deleteAnnouncment(not[not.length-1-arg2].getId())){
+							setTeacher_Main_Page(course); 
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -982,7 +982,7 @@ public class MainActivity extends Activity {
 				check.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 				check.setText(students);
 				checks.add(check);
-				check.setButtonDrawable(R.drawable.check);
+				//check.setButtonDrawable(R.drawable.check);
 				
 				// Add check to layout
 				layout4Checks.addView(check);

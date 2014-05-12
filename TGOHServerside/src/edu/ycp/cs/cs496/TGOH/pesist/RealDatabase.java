@@ -989,11 +989,11 @@ public class RealDatabase implements IDatabase{
 				
 				try {
 					stmt = conn.prepareStatement("insert into users (username, firstname, lastname, password, type) values (?, ?, ?, ?, ?)");
-					storeUserNoId(new User("Apples","Apples","Apples","Apples", UserType.MASTER), stmt, 1);
+					storeUserNoId(new User("Master","Master","Master","Master", UserType.MASTER), stmt, 1);
 					stmt.addBatch();
-					storeUserNoId(new User("Oranges","Oranges","Oranges","Oranges",UserType.STUDENT), stmt, 1);
+					storeUserNoId(new User("Sam","Sam","Sam","Sam",UserType.STUDENT), stmt, 1);
 					stmt.addBatch();
-					storeUserNoId(new User("Pomegranates","Pomegranates","Pomegranates","Pomegranates",UserType.ACCEPTEDTEACHER), stmt, 1);
+					storeUserNoId(new User("Jason","Jason","Jason","Jason",UserType.ACCEPTEDTEACHER), stmt, 1);
 					stmt.addBatch();
 					storeUserNoId(new User("Babcock","Babcock","Babcock","Babcock",UserType.ACCEPTEDTEACHER), stmt, 1);
 					stmt.addBatch();
@@ -1021,7 +1021,7 @@ public class RealDatabase implements IDatabase{
 					stmt.addBatch();
 					storeCourseNoId(new Courses("CS101", "Babcock"), stmt, 1);
 					stmt.addBatch();
-					storeCourseNoId(new Courses("CS201", "Hovemeyer"), stmt, 1);
+					storeCourseNoId(new Courses("CS201", "Jason"), stmt, 1);
 					stmt.addBatch();
 					
 					stmt.executeBatch();
@@ -1046,10 +1046,17 @@ public class RealDatabase implements IDatabase{
 					reg3.setStatus(RegistrationStatus.TEACHER);
 					storeRegistrationNoId(reg3, stmt, 1);
 					stmt.addBatch();
+					Registration reg4 = new Registration(4,2);
+					reg4.setStatus(RegistrationStatus.TEACHER);
+					storeRegistrationNoId(reg4, stmt, 1);
+					stmt.addBatch();
 					Registration reg = new Registration(2,1);
 					reg.setStatus(RegistrationStatus.PENDING);
 					storeRegistrationNoId(reg, stmt, 1);
 					stmt.addBatch();
+					Registration regg = new Registration(3,3);
+					regg.setStatus(RegistrationStatus.TEACHER);
+					storeRegistrationNoId(regg, stmt, 1);
 					
 					stmt.executeBatch();
 					
@@ -1069,7 +1076,11 @@ public class RealDatabase implements IDatabase{
 				
 				try {
 					stmt = conn.prepareStatement("insert into notifications (courseid, text) values (?,?)");
-					storeNotNoId(new Notification(1, "hi"), stmt, 1);
+					storeNotNoId(new Notification(1, "Welcome"), stmt, 1);
+					stmt.addBatch();
+					storeNotNoId(new Notification(2, "Welcome"), stmt, 1);
+					stmt.addBatch();
+					storeNotNoId(new Notification(3, "Welcome"), stmt, 1);
 					stmt.addBatch();
 					
 					stmt.executeBatch();
