@@ -601,7 +601,7 @@ public class RealDatabase implements IDatabase{
 					List<User> result = new ArrayList<User>();
 					while (resultSet.next()) {
 						User user = new User();
-						user = getUserfromRegistration(resultSet.getInt(1));
+						user = getUserfromRegistration(resultSet.getInt(2));
 						result.add(user);
 					}
 					
